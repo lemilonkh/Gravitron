@@ -6,11 +6,8 @@ settings = {
     planetCount = 5,
     objectCount = 20,
     playerSize = 15,
-<<<<<<< HEAD
-    defaultBulletCountDown = 0
-=======
+    defaultBulletCountDown = 0,
     maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
->>>>>>> 0c750f8f0d69183b4a858e7408e2a520c9ca65cf
 }
 
 function love.load()
@@ -84,16 +81,12 @@ end
 function love.update(dt)
     if not isRunning then return end
 
-<<<<<<< HEAD
     bulletCountDown = bulletCountDown - dt
     if bulletCountDown < 0 then 
         bulletCountDown = 0
     end
 
-    x, y = 0, 0
-=======
     local x, y = 0, 0
->>>>>>> 0c750f8f0d69183b4a858e7408e2a520c9ca65cf
     if love.keyboard.isDown("up") then
         y = -settings.movementSpeed
     end
