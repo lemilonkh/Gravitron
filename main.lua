@@ -141,13 +141,15 @@ function drawCircle(body)
 end
 
 function love.draw()
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(1, 1, 1)
 
     for _, planet in ipairs(planets) do
+        love.graphics.setColor(0.7, 0.2, 0.2)
         drawCircle(planet.collision)
     end
 
     for _, object in ipairs(objects) do
+        love.graphics.setColor(0.2, 0.8, 0.7)
         drawCircle(object.collision)
     end
 
@@ -158,7 +160,7 @@ function love.draw()
     end
 
     -- draw player
-    love.graphics.setColor(0, 0, 1, 1)
+    love.graphics.setColor(0, 0.5, 1)
     love.graphics.polygon('line', player.collision:getWorldPoints(player.collision:getFixtures()[1]:getShape():getPoints()))
 
 end
