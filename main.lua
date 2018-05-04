@@ -102,42 +102,39 @@ function love.update(dt)
     end
     player.collision:applyLinearImpulse(x * dt, y * dt)
 
-    -- TODO: make bullet shoot in the opposite direction the player is going (not working yet)
-    for _, bullet in ipairs(player.bullets) do
-        if bullet.NotFired then
-            
-        end
-        bullet.notFired = false
-        --TODO: Delete Bullets that are not in frame anymore
-    end
-
     world:update(dt)
     applyGravityForces()
 end
 
 function applyGravityForces()
     for _, object in ipairs(objects) do
-        local objectBody = object.collision
-        local bodyPosition = vector(objectBody:getWorldCenter())
-		
 		for _, planet in ipairs(planets) do
-            local planetBody = planet.collision
-			local shape = planetBody:getFixtures()[1]:getShape()
-			local radius = shape:getRadius()
-			local planetPosition = vector(planetBody:getWorldCenter())
+            applyGravity(object.collision, planet.collision)
+        end
+    end
 
-			local bodyToPlanet = bodyPosition - planetPosition
-			local distanceToPlanet = bodyToPlanet:len()
+    for _, planet in ipairs(planets) do
+        applyGravity(player.collision, planet.collision)
+    end
+end
 
-			if distanceToPlanet <= radius * settings.maxGravityDistance then
-                local force = -bodyToPlanet:clone()
-				
-				local sum = math.abs(force.x) + math.abs(force.y)
-				force = force * (1 / sum * radius / distanceToPlanet) * 2
-				objectBody:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
-			end
-		end
-	end
+function applyGravity(body, planet)
+    local bodyPosition = vector(body:getWorldCenter())
+
+    local shape = planet:getFixtures()[1]:getShape()
+    local radius = shape:getRadius()
+    local planetPosition = vector(planet:getWorldCenter())
+
+    local bodyToPlanet = bodyPosition - planetPosition
+    local distanceToPlanet = bodyToPlanet:len()
+
+    if distanceToPlanet <= radius * settings.maxGravityDistance then
+        local force = -bodyToPlanet:clone()
+
+        local sum = math.abs(force.x) + math.abs(force.y)
+        force = force * (1 / sum * radius / distanceToPlanet) * 2
+        body:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
+    end
 end
 
 function love.keypressed(key)
@@ -160,6 +157,10 @@ function drawCircle(body)
 end
 
 function love.draw()
+    love.graphics.push()
+    local scale = love.graphics.getDPIScale()
+    love.graphics.scale(scale)
+
     love.graphics.setColor(1, 1, 1)
 
     -- draw static planets
@@ -186,4 +187,5 @@ function love.draw()
     love.graphics.setColor(0, 0.5, 1)
     love.graphics.polygon('line', player.collision:getWorldPoints(player.collision:getFixtures()[1]:getShape():getPoints()))
 
+    love.graphics.pop()
 end
