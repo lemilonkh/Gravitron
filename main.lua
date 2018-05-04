@@ -6,7 +6,7 @@ settings = {
     planetCount = 5,
     objectCount = 20,
     playerSize = 15,
-    maxGravityDistance = 5 -- factor for radius of maximum gravity excertion
+    maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
 }
 
 function love.load()
@@ -29,11 +29,11 @@ function love.load()
     end
     
     for i = 1, settings.planetCount do
-        addPlanet(love.math.random( ) * love.graphics.getWidth(), love.math.random( ) * love.graphics.getHeight(), i * 10)
+        addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), i * 10)
     end
 
     for i = 1, settings.objectCount do
-        addObject(love.math.random( ) * love.graphics.getWidth(), love.math.random( ) * love.graphics.getHeight(), 5)
+        addObject(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), 10)
     end
 end
 
