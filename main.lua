@@ -29,7 +29,7 @@ end
 
 function addObject(x, y, r)
     local object = makeCircle(x, y, r, true)
-    table.insert(planets, object)
+    table.insert(objects, object)
 end
 
 function makeCircle(x, y, r, isDynamic)
@@ -60,6 +60,51 @@ function love.update(dt)
     if not isRunning then return end
 
     world:update(dt)
+    applyGravityForces()
+end
+
+function getDistance(a, b)
+    local x, y = a.x - b.x, a.y - b.y
+    return math.sqrt(x*x + y*y)
+end
+
+function applyGravityForces()
+    for _, object in ipairs(objects) do
+		local bx, by = object:getWorldCenter()
+		local bpos = {}
+		bpos.x = bx
+		bpos.y = by
+		
+		for _, planet in ipairs(planets) do
+			local shape = planet:getFixtures()[1]:getShape()
+			local radius = shape:getRadius()
+			local px, py = planet:getWorldCenter()
+			local ppos = {}
+			ppos.x = px
+			ppos.y = py
+			
+			local dx, dy = 0, 0
+			local dpos = {}
+			dpos.x = dx
+			dpos.y = dy
+			
+			dpos.x = dpos.x + bpos.x
+			dpos.y = dpos.y + bpos.y
+			dpos.x = dpos.x - ppos.x
+			dpos.y = dpos.y - ppos.y
+			
+			local fdist = getDistance({x = 0, y = 0}, dpos)
+			if fdist <= radius * 3 then
+				dpos.x = -dpos.x
+				dpos.y = -dpos.y
+				
+				local sum = math.abs(dpos.x) + math.abs(dpos.y)
+				dpos.x = dpos.x * (1/sum * radius/fdist) * 2
+				dpos.y = dpos.y * (1/sum * radius/fdist) * 2
+				object:applyForce(dpos.x, dpos.y, bpos.x, bpos.y)
+			end
+		end
+	end
 end
 
 function love.keypressed(key)
