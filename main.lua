@@ -117,8 +117,7 @@ function applyGravityForces()
                 local force = -bodyToPlanet:clone()
 				
 				local sum = math.abs(force.x) + math.abs(force.y)
-				force.x = force.x * (1 / sum * radius / distanceToPlanet) * 2
-				force.y = force.y * (1 / sum * radius / distanceToPlanet) * 2
+				force = force * (1 / sum * radius / distanceToPlanet) * 2
 				objectBody:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
 			end
 		end
