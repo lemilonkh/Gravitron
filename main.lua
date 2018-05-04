@@ -1,10 +1,16 @@
+local vector = require 'libs.hump.vector'
+
 settings = {
     pixelsPerMeter = 35,
     movementSpeed = 15,
     planetCount = 5,
     objectCount = 20,
     playerSize = 15,
+<<<<<<< HEAD
     defaultBulletCountDown = 0
+=======
+    maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
+>>>>>>> 0c750f8f0d69183b4a858e7408e2a520c9ca65cf
 }
 
 function love.load()
@@ -13,7 +19,6 @@ function love.load()
     world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
-
     player = {}
 
     player.collision = makeBox(150, 150, settings.playerSize, settings.playerSize, true)
@@ -32,21 +37,23 @@ function love.load()
     end
     
     for i = 1, settings.planetCount do
-        addPlanet(love.math.random( ) * love.graphics.getWidth(), love.math.random( ) * love.graphics.getHeight(), i * 10)
+        addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), i * 10)
     end
 
     for i = 1, settings.objectCount do
-        addObject(love.math.random( ) * love.graphics.getWidth(), love.math.random( ) * love.graphics.getHeight(), 5)
+        addObject(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), 10)
     end
 end
 
 function addPlanet(x, y, r)
-	local planet = makeCircle(x, y, r, false)
+	local planet = {}
+	planet.collision = makeCircle(x, y, r, false)
     table.insert(planets, planet)
 end
 
 function addObject(x, y, r)
-    local object = makeCircle(x, y, r, true)
+    local object = {}
+    object.collision = makeCircle(x, y, r, true)
     table.insert(objects, object)
 end
 
@@ -56,7 +63,7 @@ function makeCircle(x, y, r, isDynamic)
 	local shape = love.physics.newCircleShape(r)
 	local fixture = love.physics.newFixture(body, shape, 1)
     fixture:setDensity(1)
-    --fixture:setFriction(1)
+    fixture:setFriction(1)
     fixture:setRestitution(0)
     
     return body
@@ -77,12 +84,16 @@ end
 function love.update(dt)
     if not isRunning then return end
 
+<<<<<<< HEAD
     bulletCountDown = bulletCountDown - dt
     if bulletCountDown < 0 then 
         bulletCountDown = 0
     end
 
     x, y = 0, 0
+=======
+    local x, y = 0, 0
+>>>>>>> 0c750f8f0d69183b4a858e7408e2a520c9ca65cf
     if love.keyboard.isDown("up") then
         y = -settings.movementSpeed
     end
@@ -110,36 +121,26 @@ function love.update(dt)
     applyGravityForces()
 end
 
-function getDistance(a, b)
-    local x, y = a.x - b.x, a.y - b.y
-    return math.sqrt(x*x + y*y)
-end
-
 function applyGravityForces()
     for _, object in ipairs(objects) do
-		local bx, by = object:getWorldCenter()
-		local bodyPosition = {x = bx, y = by}
+        local objectBody = object.collision
+        local bodyPosition = vector(objectBody:getWorldCenter())
 		
 		for _, planet in ipairs(planets) do
-			local shape = planet:getFixtures()[1]:getShape()
+            local planetBody = planet.collision
+			local shape = planetBody:getFixtures()[1]:getShape()
 			local radius = shape:getRadius()
-			local px, py = planet:getWorldCenter()
-			local planetPosition = {x = px, y = py}
+			local planetPosition = vector(planetBody:getWorldCenter())
 
-			local force = {x = 0, y = 0}
-			
-			force.x = force.x + bodyPosition.x - planetPosition.x
-			force.y = force.y + bodyPosition.y - planetPosition.y
-			
-			local forceMagnitude = getDistance({x = 0, y = 0}, force)
-			if forceMagnitude <= radius * 3 then
-				force.x = -force.x
-				force.y = -force.y
+			local bodyToPlanet = bodyPosition - planetPosition
+			local distanceToPlanet = bodyToPlanet:len()
+
+			if distanceToPlanet <= radius * settings.maxGravityDistance then
+                local force = -bodyToPlanet:clone()
 				
 				local sum = math.abs(force.x) + math.abs(force.y)
-				force.x = force.x * (1/sum * radius / forceMagnitude) * 2
-				force.y = force.y * (1/sum * radius / forceMagnitude) * 2
-				object:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
+				force = force * (1 / sum * radius / distanceToPlanet) * 2
+				objectBody:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
 			end
 		end
 	end
@@ -164,14 +165,14 @@ function love.draw()
 
     -- draw static planets
     for _, planet in ipairs(planets) do
-        local planetRadius = planet:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', planet:getX(), planet:getY(), planetRadius)
+        local planetRadius = planet.collision:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', planet.collision:getX(), planet.collision:getY(), planetRadius)
     end
 
     -- draw dynamic objects
     for _, object in ipairs(objects) do
-        local objectRadius = object:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', object:getX(), object:getY(), objectRadius)
+        local objectRadius = object.collision:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', object.collision:getX(), object.collision:getY(), objectRadius)
     end
 
     -- draw bullets
