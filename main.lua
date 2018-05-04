@@ -6,7 +6,6 @@ settings = {
     planetCount = 5,
     objectCount = 20,
     playerSize = 15,
-    defaultBulletCountDown = 0,
     maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
 }
 
@@ -22,15 +21,12 @@ function love.load()
 
     -- bullet attack
     player.bullets = {}
-    bulletCountDown = settings.defaultBulletCountDown
     player.fire = function(self)
-        if bulletCountDown > 0 then return end
-        bullet = {}
-        bullet.x, bullet.y = player.collision:getWorldCenter()
+        local bullet = {}
+        bullet.x, bullet.y = self.collision:getWorldCenter()
         bullet.notFired = true
         bullet.collision = makeCircle(bullet.x, bullet.y, settings.playerSize/2, true)
-        table.insert(player.bullets, bullet)
-        bulletCountDown = settings.defaultBulletCountDown
+        table.insert(self.bullets, bullet)
     end
     
     for i = 1, settings.planetCount do
@@ -80,11 +76,6 @@ end
 
 function love.update(dt)
     if not isRunning then return end
-
-    bulletCountDown = bulletCountDown - dt
-    if bulletCountDown < 0 then 
-        bulletCountDown = 0
-    end
 
     local x, y = 0, 0
     if love.keyboard.isDown("up") then
@@ -155,7 +146,7 @@ function love.keypressed(key)
     elseif key == "p" then
         isRunning = not isRunning
     elseif key == "space" then
-        player.fire()
+        player:fire()
     end
 end
 
