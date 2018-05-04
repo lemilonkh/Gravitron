@@ -165,6 +165,10 @@ function drawCircle(body)
 end
 
 function love.draw()
+    love.graphics.push()
+    local scale = love.graphics.getDPIScale()
+    love.graphics.scale(scale)
+
     love.graphics.setColor(1, 1, 1)
 
     -- draw static planets
@@ -191,4 +195,5 @@ function love.draw()
     love.graphics.setColor(0, 0.5, 1)
     love.graphics.polygon('line', player.collision:getWorldPoints(player.collision:getFixtures()[1]:getShape():getPoints()))
 
+    love.graphics.pop()
 end
