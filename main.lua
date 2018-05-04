@@ -38,12 +38,14 @@ function love.load()
 end
 
 function addPlanet(x, y, r)
-	local planet = makeCircle(x, y, r, false)
+	local planet = {}
+	planet.collision = makeCircle(x, y, r, false)
     table.insert(planets, planet)
 end
 
 function addObject(x, y, r)
-    local object = makeCircle(x, y, r, true)
+    local object = {}
+    object.collision = makeCircle(x, y, r, true)
     table.insert(objects, object)
 end
 
@@ -99,12 +101,14 @@ end
 
 function applyGravityForces()
     for _, object in ipairs(objects) do
-        local bodyPosition = vector(object:getWorldCenter())
+        local objectBody = object.collision
+        local bodyPosition = vector(objectBody:getWorldCenter())
 		
 		for _, planet in ipairs(planets) do
-			local shape = planet:getFixtures()[1]:getShape()
+            local planetBody = planet.collision
+			local shape = planetBody:getFixtures()[1]:getShape()
 			local radius = shape:getRadius()
-			local planetPosition = vector(planet:getWorldCenter())
+			local planetPosition = vector(planetBody:getWorldCenter())
 
 			local bodyToPlanet = bodyPosition - planetPosition
 			local distanceToPlanet = bodyToPlanet:len()
@@ -115,7 +119,7 @@ function applyGravityForces()
 				local sum = math.abs(force.x) + math.abs(force.y)
 				force.x = force.x * (1 / sum * radius / distanceToPlanet) * 2
 				force.y = force.y * (1 / sum * radius / distanceToPlanet) * 2
-				object:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
+				objectBody:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
 			end
 		end
 	end
@@ -137,13 +141,13 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     for _, planet in ipairs(planets) do
-        local planetRadius = planet:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', planet:getX(), planet:getY(), planetRadius)
+        local planetRadius = planet.collision:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', planet.collision:getX(), planet.collision:getY(), planetRadius)
     end
 
     for _, object in ipairs(objects) do
-        local objectRadius = object:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', object:getX(), object:getY(), objectRadius)
+        local objectRadius = object.collision:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', object.collision:getX(), object.collision:getY(), objectRadius)
     end
 
     -- draw bullets
