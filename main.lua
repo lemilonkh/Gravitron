@@ -22,7 +22,7 @@ function love.load()
     -- bullet attack
     player.bullets = {}
     player.fire = function(self) 
-        bullet = {}
+        local bullet = {}
         bullet.x, bullet.y = player.collision:getWorldCenter()
         table.insert(player.bullets, bullet)
     end
