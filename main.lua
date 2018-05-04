@@ -27,9 +27,10 @@ function love.load()
         if bulletCountDown > 0 then return end
         bullet = {}
         bullet.x, bullet.y = player.collision:getWorldCenter()
-        bullet.notFired = true
         bullet.collision = makeCircle(bullet.x, bullet.y, settings.playerSize/2, true)
         table.insert(player.bullets, bullet)
+        direction = vector(player.collision:getLinearVelocity()):normalized() * 100
+        bullet.collision:applyLinearImpulse(direction.x, direction.y)
         bulletCountDown = settings.defaultBulletCountDown
     end
     
@@ -104,7 +105,7 @@ function love.update(dt)
     -- TODO: make bullet shoot in the opposite direction the player is going (not working yet)
     for _, bullet in ipairs(player.bullets) do
         if bullet.NotFired then
-            bullet.collision:applyLinearImpulse(x * 100 *dt, y * 100 * dt)
+            
         end
         bullet.notFired = false
         --TODO: Delete Bullets that are not in frame anymore
