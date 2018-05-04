@@ -38,7 +38,7 @@ function makeCircle(x, y, r, isDynamic)
 	local shape = love.physics.newCircleShape(r)
 	local fixture = love.physics.newFixture(body, shape, 1)
     fixture:setDensity(1)
-    fixture:setFriction(1)
+    --fixture:setFriction(1)
     fixture:setRestitution(0)
     
     return body
@@ -71,37 +71,28 @@ end
 function applyGravityForces()
     for _, object in ipairs(objects) do
 		local bx, by = object:getWorldCenter()
-		local bpos = {}
-		bpos.x = bx
-		bpos.y = by
+		local bodyPosition = {x = bx, y = by}
 		
 		for _, planet in ipairs(planets) do
 			local shape = planet:getFixtures()[1]:getShape()
 			local radius = shape:getRadius()
 			local px, py = planet:getWorldCenter()
-			local ppos = {}
-			ppos.x = px
-			ppos.y = py
+			local planetPosition = {x = px, y = py}
+
+			local force = {x = 0, y = 0}
 			
-			local dx, dy = 0, 0
-			local dpos = {}
-			dpos.x = dx
-			dpos.y = dy
+			force.x = force.x + bodyPosition.x - planetPosition.x
+			force.y = force.y + bodyPosition.y - planetPosition.y
 			
-			dpos.x = dpos.x + bpos.x
-			dpos.y = dpos.y + bpos.y
-			dpos.x = dpos.x - ppos.x
-			dpos.y = dpos.y - ppos.y
-			
-			local fdist = getDistance({x = 0, y = 0}, dpos)
-			if fdist <= radius * 3 then
-				dpos.x = -dpos.x
-				dpos.y = -dpos.y
+			local forceMagnitude = getDistance({x = 0, y = 0}, force)
+			if forceMagnitude <= radius * 3 then
+				force.x = -force.x
+				force.y = -force.y
 				
-				local sum = math.abs(dpos.x) + math.abs(dpos.y)
-				dpos.x = dpos.x * (1/sum * radius/fdist) * 2
-				dpos.y = dpos.y * (1/sum * radius/fdist) * 2
-				object:applyForce(dpos.x, dpos.y, bpos.x, bpos.y)
+				local sum = math.abs(force.x) + math.abs(force.y)
+				force.x = force.x * (1/sum * radius / forceMagnitude) * 2
+				force.y = force.y * (1/sum * radius / forceMagnitude) * 2
+				object:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
 			end
 		end
 	end
