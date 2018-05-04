@@ -135,17 +135,20 @@ function love.keypressed(key)
     end
 end
 
+function drawCircle(body)
+    local radius = body:getFixtures()[1]:getShape():getRadius()
+    love.graphics.circle('fill', body:getX(), body:getY(), radius)
+end
+
 function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     for _, planet in ipairs(planets) do
-        local planetRadius = planet.collision:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', planet.collision:getX(), planet.collision:getY(), planetRadius)
+        drawCircle(planet.collision)
     end
 
     for _, object in ipairs(objects) do
-        local objectRadius = object.collision:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', object.collision:getX(), object.collision:getY(), objectRadius)
+        drawCircle(object.collision)
     end
 
     -- draw bullets
