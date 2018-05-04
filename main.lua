@@ -23,10 +23,11 @@ function love.load()
     player.bullets = {}
     player.fire = function(self)
         local bullet = {}
-        bullet.x, bullet.y = self.collision:getWorldCenter()
-        bullet.notFired = true
+        bullet.x, bullet.y = player.collision:getWorldCenter()
         bullet.collision = makeCircle(bullet.x, bullet.y, settings.playerSize/2, true)
-        table.insert(self.bullets, bullet)
+        table.insert(player.bullets, bullet)
+        local direction = vector(player.collision:getLinearVelocity()):normalized() * 100
+        bullet.collision:applyLinearImpulse(direction.x, direction.y)
     end
     
     for i = 1, settings.planetCount do
@@ -91,15 +92,6 @@ function love.update(dt)
         x = settings.movementSpeed
     end
     player.collision:applyLinearImpulse(x * dt, y * dt)
-
-    -- TODO: make bullet shoot in the opposite direction the player is going (not working yet)
-    for _, bullet in ipairs(player.bullets) do
-        if bullet.NotFired then
-            bullet.collision:applyLinearImpulse(x * 100 * dt, y * 100 * dt)
-        end
-        bullet.notFired = false
-        --TODO: Delete Bullets that are not in frame anymore
-    end
 
     world:update(dt)
     applyGravityForces()
