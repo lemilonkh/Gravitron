@@ -11,7 +11,7 @@ function love.load()
     world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
-    playerPosition = {x = 150, y = 150}
+    player = makeBox(150, 150, 15, 15, true)
 
     for i = 1, settings.planetCount do
         addPlanet(i * 100, i * 100, i * 10)
@@ -37,19 +37,29 @@ function makeCircle(x, y, r, isDynamic)
     local body = love.physics.newBody(world, x, y, bodyType)
 	local shape = love.physics.newCircleShape(r)
 	local fixture = love.physics.newFixture(body, shape, 1)
-	fixture:setDensity(1)
-    fixture:setRestitution(0)
+    fixture:setDensity(1)
     fixture:setFriction(1)
+    fixture:setRestitution(0)
     
     return body
+end
+
+function makeBox(x, y, w, h, isDynamic)
+    local bodyType = isDynamic and 'dynamic' or 'static'
+    local body = love.physics.newBody(world, x, y, bodyType)
+	local shape = love.physics.newRectangleShape(w, h)
+	local fixture = love.physics.newFixture(body, shape, 1)
+	fixture:setDensity(1)
+	fixture:setFriction(1)
+	fixture:setRestitution(0)
+	
+	return body
 end
 
 function love.update(dt)
     if not isRunning then return end
 
     world:update(dt)
-    playerPosition.x = playerPosition.x + 10 * dt
-    playerPosition.y = playerPosition.y + 10 * dt
 end
 
 function love.keypressed(key)
@@ -74,4 +84,7 @@ function love.draw()
         local objectRadius = object:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', object:getX(), object:getY(), objectRadius)
     end
+
+    -- draw player
+    love.graphics.polygon('line', player:getWorldPoints(player:getFixtures()[1]:getShape():getPoints()))
 end
