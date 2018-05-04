@@ -5,7 +5,8 @@ settings = {
     movementSpeed = 15,
     planetCount = 5,
     objectCount = 20,
-    playerSize = 15 
+    playerSize = 15,
+    maxGravityDistance = 5 -- factor for radius of maximum gravity excertion
 }
 
 function love.load()
@@ -108,7 +109,7 @@ function applyGravityForces()
 			local bodyToPlanet = bodyPosition - planetPosition
 			local distanceToPlanet = bodyToPlanet:len()
 
-			if distanceToPlanet <= radius * 3 then
+			if distanceToPlanet <= radius * settings.maxGravityDistance then
                 local force = -bodyToPlanet:clone()
 				
 				local sum = math.abs(force.x) + math.abs(force.y)
