@@ -9,7 +9,7 @@ function love.conf(t)
 
     t.audio.mixwithsystem = true        -- Keep background music playing when opening LOVE (boolean, iOS and Android only)
 
-    t.window.title = "Untitled"         -- The window title (string)
+    t.window.title = "Gravitron"         -- The window title (string)
     t.window.icon = nil                 -- Filepath to an image to use as the window's icon (string)
     t.window.width = 1600               -- The window width (number)
     t.window.height = 900               -- The window height (number)
@@ -22,7 +22,7 @@ function love.conf(t)
     t.window.vsync = 1                  -- Vertical sync mode (number)
     t.window.msaa = 5                   -- The number of samples to use with multi-sampled antialiasing (number)
     t.window.display = 1                -- Index of the monitor to show the window in (number)
-    t.window.highdpi = false            -- Enable high-dpi mode for the window on a Retina display (boolean)
+    t.window.highdpi = true             -- Enable high-dpi mode for the window on a Retina display (boolean)
     t.window.x = nil                    -- The x-coordinate of the window's position in the specified display (number)
     t.window.y = nil                    -- The y-coordinate of the window's position in the specified display (number)
 
