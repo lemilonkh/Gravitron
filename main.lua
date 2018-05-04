@@ -1,32 +1,54 @@
+settings = {
+    pixelsPerMeter = 35,
+    movementSpeed = 35,
+    planetCount = 5,
+    objectCount = 20
+}
+
 function love.load()
-    love.physics.setMeter(35)
+    isRunning = true
+    love.physics.setMeter(settings.pixelsPerMeter)
     world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
+    playerPosition = {x = 150, y = 150}
 
-    for i = 1, 5 do
-        addPlanet(i * 100, i * 200, i * 50)
+    for i = 1, settings.planetCount do
+        addPlanet(i * 100, i * 100, i * 10)
     end
 
-    isRunning = true
-    x, y = 100, 100
+    for i = 1, settings.objectCount do
+        addObject(i * 20, i * 20, 5)
+    end
 end
 
 function addPlanet(x, y, r)
-	local body = love.physics.newBody(world, x, y, "static")
+	local planet = makeCircle(x, y, r, false)
+    table.insert(planets, planet)
+end
+
+function addObject(x, y, r)
+    local object = makeCircle(x, y, r, true)
+    table.insert(planets, object)
+end
+
+function makeCircle(x, y, r, isDynamic)
+    local bodyType = isDynamic and 'dynamic' or 'static'
+    local body = love.physics.newBody(world, x, y, bodyType)
 	local shape = love.physics.newCircleShape(r)
 	local fixture = love.physics.newFixture(body, shape, 1)
 	fixture:setDensity(1)
-	fixture:setRestitution(0)
-
-    table.insert(planets, body)
+    fixture:setRestitution(0)
+    fixture:setFriction(1)
+    
+    return body
 end
 
 function love.update(dt)
     if not isRunning then return end
 
-    x = x + 10 * dt
-    y = y + 10 * dt
+    playerPosition.x = playerPosition.x + 10 * dt
+    playerPosition.y = playerPosition.y + 10 * dt
 end
 
 function love.keypressed(key)
@@ -45,5 +67,10 @@ function love.draw()
     for _, planet in ipairs(planets) do
         local planetRadius = planet:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', planet:getX(), planet:getY(), planetRadius)
+    end
+
+    for _, object in ipairs(objects) do
+        local objectRadius = object:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', object:getX(), object:getY(), objectRadius)
     end
 end
