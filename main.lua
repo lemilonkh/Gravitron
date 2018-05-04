@@ -3,7 +3,8 @@ settings = {
     movementSpeed = 15,
     planetCount = 5,
     objectCount = 20,
-    playerSize = 15 
+    playerSize = 15,
+    defaultBulletCountDown = 0
 }
 
 function love.load()
@@ -19,10 +20,15 @@ function love.load()
 
     -- bullet attack
     player.bullets = {}
-    player.fire = function(self) 
+    bulletCountDown = settings.defaultBulletCountDown
+    player.fire = function(self)
+        if bulletCountDown > 0 then return end
         bullet = {}
         bullet.x, bullet.y = player.collision:getWorldCenter()
+        bullet.notFired = true
+        bullet.collision = makeCircle(bullet.x, bullet.y, settings.playerSize/2, true)
         table.insert(player.bullets, bullet)
+        bulletCountDown = settings.defaultBulletCountDown
     end
     
     for i = 1, settings.planetCount do
@@ -71,6 +77,11 @@ end
 function love.update(dt)
     if not isRunning then return end
 
+    bulletCountDown = bulletCountDown - dt
+    if bulletCountDown < 0 then 
+        bulletCountDown = 0
+    end
+
     x, y = 0, 0
     if love.keyboard.isDown("up") then
         y = -settings.movementSpeed
@@ -86,8 +97,13 @@ function love.update(dt)
     end
     player.collision:applyLinearImpulse(x * dt, y * dt)
 
-    if love.keyboard.isDown("space") then
-        player.fire()
+    -- TODO: make bullet shoot in the opposite direction the player is going (not working yet)
+    for _, bullet in ipairs(player.bullets) do
+        if bullet.NotFired then
+            bullet.collision:applyLinearImpulse(x * 100 *dt, y * 100 * dt)
+        end
+        bullet.notFired = false
+        --TODO: Delete Bullets that are not in frame anymore
     end
 
     world:update(dt)
@@ -138,17 +154,21 @@ function love.keypressed(key)
         love.load() -- reload game
     elseif key == "p" then
         isRunning = not isRunning
+    elseif key == "space" then
+        player.fire()
     end
 end
 
 function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
 
+    -- draw static planets
     for _, planet in ipairs(planets) do
         local planetRadius = planet:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', planet:getX(), planet:getY(), planetRadius)
     end
 
+    -- draw dynamic objects
     for _, object in ipairs(objects) do
         local objectRadius = object:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', object:getX(), object:getY(), objectRadius)
@@ -157,7 +177,9 @@ function love.draw()
     -- draw bullets
     for _, bullet in ipairs(player.bullets) do
         love.graphics.setColor(1, 0, 0, 1)
-        love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
+        --love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
+        local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
     end
 
     -- draw player
