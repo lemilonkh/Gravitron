@@ -15,7 +15,6 @@ function love.load()
     world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
-
     player = {}
 
     player.collision = makeBox(150, 150, settings.playerSize, settings.playerSize, true)
@@ -76,7 +75,7 @@ end
 function love.update(dt)
     if not isRunning then return end
 
-    x, y = 0, 0
+    local x, y = 0, 0
     if love.keyboard.isDown("up") then
         y = -settings.movementSpeed
     end
