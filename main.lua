@@ -14,11 +14,11 @@ function love.load()
     player = makeBox(150, 150, 15, 15, true)
 
     for i = 1, settings.planetCount do
-        addPlanet(i * 100, i * 100, i * 10)
+        addPlanet(love.math.random( ) * love.graphics.getWidth(), love.math.random( ) * love.graphics.getHeight(), i * 10)
     end
 
     for i = 1, settings.objectCount do
-        addObject(i * 20, i * 20, 5)
+        addObject(love.math.random( ) * love.graphics.getWidth(), love.math.random( ) * love.graphics.getHeight(), 5)
     end
 end
 
