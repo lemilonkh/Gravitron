@@ -47,6 +47,7 @@ end
 function love.update(dt)
     if not isRunning then return end
 
+    world:update(dt)
     playerPosition.x = playerPosition.x + 10 * dt
     playerPosition.y = playerPosition.y + 10 * dt
 end
