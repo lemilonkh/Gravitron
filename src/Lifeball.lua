@@ -25,7 +25,7 @@ end
 function Lifeball:draw(player, lifeballNum, angleOffset)
     if not self.isAlive then return end
 
-    alpha = ((math.pi * 2) / settings.lifeballCount) * lifeballNum - 1 + angleOffset
+    alpha = ((2 * math.pi) / #player.lifeballs) * lifeballNum - 1 + angleOffset
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite,
