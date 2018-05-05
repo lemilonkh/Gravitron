@@ -20,6 +20,7 @@ end
 
 function Powerup:death()
     self.isAlive = false
+    self.collision:destroy()
 end
 
 function Powerup:draw()
