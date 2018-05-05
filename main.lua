@@ -9,13 +9,13 @@ local controls = require 'src.controls'
 settings = {
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
-    turningSpeed = math.pi / 2, -- rad per second
+    turningSpeed = math.pi, -- rad per second
     planetCount = 10,
     objectCount = 20,
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
     bulletSize = 20,
     powerupTime = 5, -- seconds after pickup
-    powerupSpawnInterval = 5, -- seconds between new powerups being spawned
+    powerupSpawnInterval = 10, -- seconds between new powerups being spawned
 }
 
 function love.load()
