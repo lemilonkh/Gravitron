@@ -7,6 +7,9 @@ local physics = require 'src.physics'
 local controls = require 'src.controls'
 
 settings = {
+    planetGridColumns = 6,
+    planetGridRows = 4,
+    planetProbability = 60, -- percent
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
     turningSpeed = math.pi, -- rad per second
@@ -73,50 +76,6 @@ function love.load()
         Player('delta_ship', 150, 150, controls[1]),
         Player('omega_ship', love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
     }
-    
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
-
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
-
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
-
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
 
     powerups = {}
     Timer.every(settings.powerupSpawnInterval, function()
@@ -126,10 +85,6 @@ function love.load()
         table.insert(powerups, powerup)
     end)
 
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
     planetSprites = {}
@@ -137,11 +92,20 @@ function love.load()
         local planetSprite = love.graphics.newImage('sprites/' .. planetName .. '.png')
         table.insert(planetSprites, planetSprite)
     end
-    
-    for i = 1, settings.planetCount do
-        local radius = love.math.random(50, 100)
-        local x, y = getRandomPosition()
-        addPlanet(x, y, radius)
+
+    -- distribute planets randomly in a grid pattern
+    local planetGridColumnSize = love.graphics.getWidth() / settings.planetGridColumns
+    local planetGridRowSize = love.graphics.getHeight() / settings.planetGridRows
+
+    for x = 1, settings.planetGridColumns - 1 do
+        for y = 1, settings.planetGridRows - 1 do
+            if love.math.random(0, 100) < settings.planetProbability then
+                local radius = love.math.random(50, 100)
+                local posX = x * planetGridColumnSize + love.math.random(-planetGridColumnSize / 8, planetGridColumnSize / 8)
+                local posY = y * planetGridRowSize + love.math.random(-planetGridRowSize / 8, planetGridRowSize / 8)
+                addPlanet(posX, posY, radius)
+            end
+        end
     end
 
     for i = 1, settings.objectCount do
@@ -155,13 +119,13 @@ function getRandomPosition()
     return x, y
 end
 
+local Planet = class "Planet"
+
 function addPlanet(x, y, r)
-    local planet = {
-        x = x,
-        y = y,
-        r = r,
-        collision = physics.makeCircle(x, y, r, false)
-    }
+    local planet = Planet()
+    planet.x, planet.y, planet.r = x, y, r
+    planet.isPlanet = true
+    planet.collision = physics.makeCircle(x, y, r, false, planet)
     table.insert(planets, planet)
 end
 

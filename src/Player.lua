@@ -1,6 +1,7 @@
 local Player = class 'Player'
 local physics = require 'src.physics'
 local Lifeball = require 'src.Lifeball'
+local util = require 'src.util'
 
 function Player:init(spriteName, x, y, controls)
     self.x, self.y = x, y
@@ -9,9 +10,9 @@ function Player:init(spriteName, x, y, controls)
     self.width, self.height = self.sprite:getDimensions()
 
     if spriteName == 'delta_ship' then
-        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
+        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true, self)
     elseif spriteName == 'omega_ship' then
-        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true)
+        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true, self)
     end
 
     self.lifeballs = {}
@@ -42,11 +43,42 @@ end
 function Player:fire()
     local bullet = {}
     bullet.x, bullet.y = self.collision:getWorldCenter()
+    local angle = self.collision:getAngle()
+    local diry = math.sin(angle)*70
+    local dirx = math.cos(angle)*70
+    bullet.x = bullet.x + dirx
+    bullet.y = bullet.y + diry
     bullet.collision = physics.makeCircle(bullet.x, bullet.y, 10, true)
+    bullet.collision:setMass(30)
     table.insert(self.bullets, bullet)
-    local direction = vector(self.collision:getLinearVelocity()):normalized() * 100
-    bullet.collision:applyLinearImpulse(direction.x, direction.y)
+    --bullet.collision:applyLinearImpulse(dirx, diry)
+    self.collision:applyLinearImpulse(-dirx*0.5, -diry*0.5)
+    bullet.collision:setLinearVelocity(dirx*4, diry*4)
     shotSounds[math.random(8)]:play()
+end
+
+function Player:onCollision(otherFixture)
+    local other = otherFixture:getUserData()
+    if not other then return end
+
+    -- when two players collide, the slowest one takes the damage
+    if other:instanceOf(Player) then
+        local ownVelocity = vector(self.collision:getLinearVelocity()):len2()
+        local otherVelocity = vector(other.collision:getLinearVelocity()):len2()
+
+        if ownVelocity < otherVelocity then
+            self:takeDamage()
+        elseif otherVelocity > ownVelocity then
+            other:takeDamage()
+        else
+            self:takeDamage()
+            other:takeDamage()
+        end
+    end
+
+    if other.isPlanet then
+        self:takeDamage()
+    end
 end
 
 function Player:activatePowerup(powerup)
@@ -81,9 +113,14 @@ end
 
 function Player:takeDamage()
     util.removeValue(self.lifeballs, self.lifeballs[1])
+
+    if #self.lifeballs <= 0 then
+        self:death()
+    end
 end
 
 function Player:death()
+    print('Player died!')
     love.graphics.setColor(1, 1, 1)
     font = love.graphics.newFont(400)
     love.graphics.setFont(font)
@@ -91,10 +128,6 @@ function Player:death()
 end
 
 function Player:update(dt)
-    if #self.lifeballs <= 0 then
-        Player:death()
-    end
-
     self.controls:update()
 
     local deltaAngle, deltaSpeed = self.controls:get('move')
