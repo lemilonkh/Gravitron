@@ -1,6 +1,7 @@
 class = require 'libs.30log'
 vector = require 'libs.hump.vector'
 Player = require 'src.Player'
+Timer = require 'libs.hump.timer'
 local Powerup = require 'src.Powerup'
 local physics = require 'src.physics'
 local controls = require 'src.controls'
@@ -12,7 +13,8 @@ settings = {
     planetCount = 10,
     objectCount = 20,
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
-    bulletSize = 20
+    bulletSize = 20,
+    powerupTime = 5, -- seconds after pickup
 }
 
 function love.load()
@@ -86,6 +88,8 @@ end
 
 function love.update(dt)
     if not isRunning then return end
+
+    Timer.update(dt)
 
     for i = 1, #players do
         players[i]:update(dt)

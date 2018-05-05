@@ -35,14 +35,26 @@ end
 
 function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
-        self.movementSpeed = 4 * self.movementSpeed
+        self.movementSpeed = 2 * settings.movementSpeed
         self.color = {1, 1, 0, 1}
+        Timer.after(settings.powerupTime, function()
+            self.movementSpeed = settings.movementSpeed
+            self.color = {1, 1, 1, 1}
+        end)
     elseif powerup.type == 'ghost' then
         self.isGhost = true
         self.color = {1, 1, 1, 0.5}
+        Timer.after(settings.powerupTime, function()
+            self.isGhost = false
+            self.color = {1, 1, 1, 1}
+        end)
     elseif powerup.type == 'shield' then
         self.isShielded = true
         self.color = {0, 0, 1, 1}
+        Timer.after(settings.powerupTime, function()
+            self.isShielded = false
+            self.color = {1, 1, 1, 1}
+        end)
     end
 end
 
