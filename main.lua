@@ -35,7 +35,7 @@ function love.load()
     --musicTrack:play()
 
     local backgroundFiles = love.filesystem.getDirectoryItems('backgrounds')
-    local randomBackgroundFile = backgroundFiles[math.random(#backgroundFiles)]
+    local randomBackgroundFile = backgroundFiles[love.math.random(#backgroundFiles)]
     backgroundImage = love.graphics.newImage('backgrounds/' .. randomBackgroundFile)
 
     isRunning = true
@@ -50,9 +50,7 @@ function love.load()
         Player('omega_ship', love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
     }
 
-    powerups = {
-        Powerup(100, 100, 'lightning')
-    }
+    powerups = {}
     Timer.every(settings.powerupSpawnInterval, function()
         local types = {'lightning', 'shield', 'ghost' }
         local x, y = getRandomPosition()
