@@ -2,7 +2,8 @@ local vector = require 'libs.hump.vector'
 
 settings = {
     pixelsPerMeter = 35,
-    movementSpeed = 15,
+    movementSpeed = 50, -- acceleration in px per second
+    turningSpeed = math.pi, -- rad per second
     planetCount = 5,
     objectCount = 20,
     maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
@@ -33,7 +34,7 @@ function love.load()
     player.fire = function(self)
         local bullet = {}
         bullet.x, bullet.y = player.collision:getWorldCenter()
-        bullet.collision = makeCircle(bullet.x, bullet.y, settings.playerSize/2, true)
+        bullet.collision = makeCircle(bullet.x, bullet.y, 10, true)
         table.insert(player.bullets, bullet)
         local direction = vector(player.collision:getLinearVelocity()):normalized() * 100
         bullet.collision:applyLinearImpulse(direction.x, direction.y)
@@ -102,20 +103,25 @@ end
 function love.update(dt)
     if not isRunning then return end
 
-    local x, y = 0, 0
+    local deltaAngle, deltaSpeed = 0, 0
     if love.keyboard.isDown("up") then
-        y = -settings.movementSpeed
+        deltaSpeed = -settings.movementSpeed
     end
     if love.keyboard.isDown("down") then
-        y = settings.movementSpeed
+        deltaSpeed = settings.movementSpeed
     end
     if love.keyboard.isDown("left") then
-        x = -settings.movementSpeed
+        deltaAngle = -settings.turningSpeed
     end
     if love.keyboard.isDown("right") then
-        x = settings.movementSpeed
+        deltaAngle = settings.turningSpeed
     end
-    player.collision:applyLinearImpulse(x * dt, y * dt)
+
+    local playerAngle = player.collision:getAngle() + deltaAngle * dt
+    player.collision:setAngle(playerAngle)
+
+    local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed * dt, math.sin(playerAngle) * deltaSpeed * dt
+    player.collision:applyLinearImpulse(impulseX, impulseY)
 
     world:update(dt)
     applyGravityForces()
@@ -207,8 +213,6 @@ function love.draw()
         love.graphics.setColor(0.2, 0.8, 0.7)
         drawCircle(object.collision)
     end
-
-
 
     -- draw bullets
     for _, bullet in ipairs(player.bullets) do
