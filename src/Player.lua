@@ -10,16 +10,6 @@ function Player:init(spriteName, x, y, controls)
     self.bullets = {}
 end
 
-function love.update(dt)
-    input:update()
-
-    local x, y = input:get 'move'
-    playerShip:move(x*100, y*100)
-    if input:pressed 'action' then
-        playerShip:shoot()
-    end
-end
-
 -- bullet attack
 function Player:fire()
     local bullet = {}
