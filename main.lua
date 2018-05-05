@@ -17,7 +17,9 @@ function love.load()
     objects = {} -- dynamic objects
     player = {}
 
-    player.collision = makeBox(150, 150, settings.playerSize, settings.playerSize, true)
+    player.sprite = love.graphics.newImage('sprites/delta_ship.png')
+    local playerWidth, playerHeight = player.sprite:getDimensions()
+    player.collision = makeBox(playerWidth, playerHeight, settings.playerSize, settings.playerSize, true)
 
     -- bullet attack
     player.bullets = {}
@@ -155,8 +157,12 @@ function drawCircle(body)
     love.graphics.circle('fill', body:getX(), body:getY(), radius)
 end
 
-function getPlayerPosition()
+function getPlayerPoints()
     return player.collision:getWorldPoints(player.collision:getFixtures()[1]:getShape():getPoints())
+end
+
+function getPlayerPosition()
+    return player.collision:getWorldCenter()
 end
 
 function love.draw()
@@ -187,8 +193,10 @@ function love.draw()
     end
 
     -- draw player
-    love.graphics.setColor(0, 0.5, 1)
-    love.graphics.polygon('line', getPlayerPosition())
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.polygon('line', getPlayerPoints())
+    local playerBody = player.collision
+    love.graphics.draw(player.sprite, playerBody:getX(), playerBody:getY(), playerBody:getAngle(), 1, 1, player.sprite:getWidth()/2, player.sprite:getHeight()/2)
 
     love.graphics.pop()
 end
