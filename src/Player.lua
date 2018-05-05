@@ -6,6 +6,7 @@ local util = require 'src.util'
 function Player:init(spriteName, x, y, controls)
     self.x, self.y = x, y
     self.controls = controls
+    self.isAlive = true
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
 
@@ -121,10 +122,7 @@ end
 
 function Player:death()
     print('Player died!')
-    love.graphics.setColor(1, 1, 1)
-    font = love.graphics.newFont(400)
-    love.graphics.setFont(font)
-    love.graphics.print("GAME OVER", love.graphics.getWidth()/2 - 1230, love.graphics.getHeight()/2 - 300)
+    self.isAlive = false
 end
 
 function Player:update(dt)

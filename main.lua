@@ -199,6 +199,13 @@ function love.draw()
 
     for _, player in ipairs(players) do
         player:draw()
+
+        if not player.isAlive then
+            love.graphics.setColor(1, 1, 1)
+            local font = love.graphics.newFont(400)
+            love.graphics.setFont(font)
+            love.graphics.printf("GAME OVER", 0, 0, love.graphics.getWidth(), 'center')
+        end
     end
 
     love.graphics.pop()
