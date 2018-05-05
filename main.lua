@@ -12,7 +12,8 @@ settings = {
     movementSpeed = 15,
     planetCount = 5,
     objectCount = 20,
-    maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
+    maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
+    bulletSize = 20
 }
 
 function love.load()
@@ -32,7 +33,7 @@ function love.load()
     player.fire = function(self)
         local bullet = {}
         bullet.x, bullet.y = player.collision:getWorldCenter()
-        bullet.collision = makeCircle(bullet.x, bullet.y, settings.playerSize/2, true)
+        bullet.collision = makeCircle(bullet.x, bullet.y, settings.bulletSize/2, true)
         table.insert(player.bullets, bullet)
         local direction = vector(player.collision:getLinearVelocity()):normalized() * 100
         bullet.collision:applyLinearImpulse(direction.x, direction.y)
@@ -91,7 +92,7 @@ function makeTriangle(x, y, w, h, isDynamic)
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(-w/2, 0, w/2, -h/2, w/2, h/2)
     local fixture = love.physics.newFixture(body, shape, 1)
-    fixture:setDensity(20)
+    fixture:setDensity(2000)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
@@ -214,7 +215,7 @@ function love.draw()
     -- draw bullets
     for _, bullet in ipairs(player.bullets) do
         love.graphics.setColor(1, 0, 0, 1)
-        --love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
+        --love.graphics.circle("fill", bullet.x, bullet.y, settings.bulletSize/2)
         local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
     end
