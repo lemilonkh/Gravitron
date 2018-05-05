@@ -23,7 +23,7 @@ function physics.shouldFixturesCollide(a, b)
     return not (isGhostInvolved or (isPlayerInvolved and isPowerupInvolved))
 end
 
-function physics.makeCircle(x, y, r, isDynamic)
+function physics.makeCircle(x, y, r, isDynamic, userData)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newCircleShape(r)
@@ -32,10 +32,15 @@ function physics.makeCircle(x, y, r, isDynamic)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
+    if userData then
+        fixture:setUserData(userData)
+        body:setUserData(userData)
+    end
+
     return body
 end
 
-function physics.makeBox(x, y, w, h, isDynamic)
+function physics.makeBox(x, y, w, h, isDynamic, userData)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newRectangleShape(w, h)
@@ -44,10 +49,15 @@ function physics.makeBox(x, y, w, h, isDynamic)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
+    if userData then
+        fixture:setUserData(userData)
+        body:setUserData(userData)
+    end
+
     return body
 end
 
-function physics.makeTriangle(x, y, w, h, isDynamic)
+function physics.makeTriangle(x, y, w, h, isDynamic, userData)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(-w/2, 0, w/2, -h/2, w/2, h/2)
@@ -56,10 +66,15 @@ function physics.makeTriangle(x, y, w, h, isDynamic)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
+    if userData then
+        fixture:setUserData(userData)
+        body:setUserData(userData)
+    end
+
     return body
 end
 
-function physics.makeDiamond(x, y, w, h, isDynamic)
+function physics.makeDiamond(x, y, w, h, isDynamic, userData)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(0, h/2, -w/2, 0, 0, -h/2, w/2, 0)
@@ -67,6 +82,11 @@ function physics.makeDiamond(x, y, w, h, isDynamic)
     fixture:setDensity(0.01)
     fixture:setFriction(1)
     fixture:setRestitution(0)
+
+    if userData then
+        fixture:setUserData(userData)
+        body:setUserData(userData)
+    end
 
     return body
 end

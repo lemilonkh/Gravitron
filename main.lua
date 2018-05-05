@@ -106,13 +106,12 @@ function getRandomPosition()
     return x, y
 end
 
+local Planet = class "Planet"
+
 function addPlanet(x, y, r)
-    local planet = {
-        x = x,
-        y = y,
-        r = r,
-        isPlanet = true
-    }
+    local planet = Planet()
+    planet.x, planet.y, planet.r = x, y, r
+    planet.isPlanet = true
     planet.collision = physics.makeCircle(x, y, r, false, planet)
     table.insert(planets, planet)
 end

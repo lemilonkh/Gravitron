@@ -1,6 +1,7 @@
 local Player = class 'Player'
 local physics = require 'src.physics'
 local Lifeball = require 'src.Lifeball'
+local util = require 'src.util'
 
 function Player:init(spriteName, x, y, controls)
     self.x, self.y = x, y
@@ -9,9 +10,9 @@ function Player:init(spriteName, x, y, controls)
     self.width, self.height = self.sprite:getDimensions()
 
     if spriteName == 'delta_ship' then
-        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
+        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true, self)
     elseif spriteName == 'omega_ship' then
-        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true)
+        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true, self)
     end
 
     self.lifeballs = {}
@@ -105,17 +106,17 @@ end
 
 function Player:takeDamage()
     util.removeValue(self.lifeballs, self.lifeballs[1])
+
+    if #self.lifeballs <= 0 then
+        self:death()
+    end
 end
 
-function Player:Death()
-
+function Player:death()
+    print('Player died!')
 end
 
 function Player:update(dt)
-    if #self.lifeballs <= 0 do
-        Player:death()
-    end
-
     self.controls:update()
 
     local deltaAngle, deltaSpeed = self.controls:get('move')
