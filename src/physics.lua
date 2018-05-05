@@ -8,7 +8,6 @@ end
 
 function physics.beginContact(a, b, coll)
     local objectA, objectB = a:getUserData(), b:getUserData()
-    print('BeginContact', objectA, objectB)
 
     if (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player)) then
         if not (objectA and objectA:instanceOf(Powerup)) and not (objectB and objectB:instanceOf(Powerup)) then

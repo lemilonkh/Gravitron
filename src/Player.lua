@@ -20,6 +20,13 @@ function Player:init(spriteName, x, y, controls, playerNum)
     self.movementSpeed = settings.movementSpeed
     self.isGhost = false
     self.isShielded = false
+
+    self.color = {1, 1, 1, 1}
+    self.effectSprite = nil
+    self.effectSprites = {
+        shield = love.graphics.newImage('sprites/energy_shield.png'),
+        glow = love.graphics.newImage('sprites/glow.png')
+    }
 end
 
 function Player:fire()
@@ -34,11 +41,28 @@ end
 
 function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
-        self.movementSpeed = 4 * self.movementSpeed
+        self.movementSpeed = 2 * settings.movementSpeed
+        self.effectSprite = self.effectSprites.glow
+        self.effectColor = {0.8, 1, 0, 1}
+        Timer.after(settings.powerupTime, function()
+            self.movementSpeed = settings.movementSpeed
+            self.effectSprite = nil
+        end)
     elseif powerup.type == 'ghost' then
         self.isGhost = true
+        self.color = {1, 1, 1, 0.5}
+        Timer.after(settings.powerupTime, function()
+            self.isGhost = false
+            self.color = {1, 1, 1, 1}
+        end)
     elseif powerup.type == 'shield' then
         self.isShielded = true
+        self.effectSprite = self.effectSprites.shield
+        self.effectColor = {0, 0.5, 0.8, 0.7}
+        Timer.after(settings.powerupTime, function()
+            self.isShielded = false
+            self.effectSprite = nil
+        end)
     end
 end
 
@@ -94,8 +118,20 @@ function Player:draw()
         love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
     end
 
+    -- draw powerup effects
+    if self.effectSprite then
+        love.graphics.setColor(self.effectColor or {1, 1, 1, 1})
+        love.graphics.draw(
+            self.effectSprite,
+            self.collision:getX(), self.collision:getY(),
+            self.collision:getAngle(),
+            1, 1,
+            self.effectSprite:getWidth() / 2, self.effectSprite:getHeight() / 2
+        )
+    end
+
     -- draw player
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(self.color)
     love.graphics.draw(
         self.sprite,
         self.collision:getX(), self.collision:getY(),
