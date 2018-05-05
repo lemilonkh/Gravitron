@@ -12,7 +12,9 @@ settings = {
     planetCount = 10,
     objectCount = 20,
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
-    bulletSize = 20
+    bulletSize = 20,
+    lifeballCount = 5,
+    lifeballDistance = 64 -- distance from player ship
 }
 
 function love.load()
@@ -50,7 +52,55 @@ function love.load()
     powerups = {
         Powerup(100, 100, 'lightning')
     }
+    
+    for i, planet in ipairs(planets) do
+        --love.graphics.setColor(0.7, 0.2, 0.2)
+        --drawCircle(planet.collision)
+        love.graphics.setColor(1, 1, 1)
+        local planetSprite = planetSprites[(i % #planetSprites) + 1]
+        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
+    end
 
+    -- draw dynamic objects
+    for _, object in ipairs(objects) do
+        love.graphics.setColor(0.2, 0.8, 0.7)
+    end
+    for i, planet in ipairs(planets) do
+        --love.graphics.setColor(0.7, 0.2, 0.2)
+        --drawCircle(planet.collision)
+        love.graphics.setColor(1, 1, 1)
+        local planetSprite = planetSprites[(i % #planetSprites) + 1]
+        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
+    end
+
+    -- draw dynamic objects
+    for _, object in ipairs(objects) do
+        love.graphics.setColor(0.2, 0.8, 0.7)
+    end
+    for i, planet in ipairs(planets) do
+        --love.graphics.setColor(0.7, 0.2, 0.2)
+        --drawCircle(planet.collision)
+        love.graphics.setColor(1, 1, 1)
+        local planetSprite = planetSprites[(i % #planetSprites) + 1]
+        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
+    end
+
+    -- draw dynamic objects
+    for _, object in ipairs(objects) do
+        love.graphics.setColor(0.2, 0.8, 0.7)
+    end
+    for i, planet in ipairs(planets) do
+        --love.graphics.setColor(0.7, 0.2, 0.2)
+        --drawCircle(planet.collision)
+        love.graphics.setColor(1, 1, 1)
+        local planetSprite = planetSprites[(i % #planetSprites) + 1]
+        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
+    end
+
+    -- draw dynamic objects
+    for _, object in ipairs(objects) do
+        love.graphics.setColor(0.2, 0.8, 0.7)
+    end
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
     planetSprites = {}
