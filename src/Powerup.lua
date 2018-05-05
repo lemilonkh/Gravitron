@@ -33,7 +33,6 @@ function Powerup:draw()
         1, 1,
         self.radius, self.radius
     )
-    --love.graphics.circle('line', self.collision:getX(), self.collision:getY(), self.radius)
 end
 
 return Powerup
