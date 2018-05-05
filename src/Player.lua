@@ -53,7 +53,11 @@ function Player:update(dt)
     if position.y > height + margin then warpedPosition.y = 0 end
 
     if position:dist(warpedPosition) > 0 then
-        player.collision:setPosition(warpedPosition.x, warpedPosition.y)
+        self.collision:setPosition(warpedPosition.x, warpedPosition.y)
+    end
+
+    if self.controls:pressed('action') then
+        self:fire()
     end
 end
 
@@ -68,8 +72,7 @@ end
 function Player:draw()
     -- draw bullets
     for _, bullet in ipairs(self.bullets) do
-        love.graphics.setColor(1, 0, 0, 1)
-        --love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
+        love.graphics.setColor(0.8, 0.5, 0.2)
         local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
     end

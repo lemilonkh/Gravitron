@@ -31,7 +31,10 @@ function love.load()
     objects = {} -- dynamic objects
     world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
-    player = Player(150, 150, controls[1])
+    players = {
+        Player(150, 150, controls[1]),
+        Player(love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
+    }
 
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
@@ -67,7 +70,6 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
  
 end
 
-
 function addPlanet(x, y, r)
     local planet = {
         x = x,
@@ -86,9 +88,11 @@ end
 function love.update(dt)
     if not isRunning then return end
 
-    player:update(dt)
+    for i = 1, #players do
+        players[i]:update(dt)
+    end
     world:update(dt)
-    physics.applyGravityForces(player, objects, planets)
+    physics.applyGravityForces(players, objects, planets)
 end
 
 function love.keypressed(key)
@@ -100,8 +104,6 @@ function love.keypressed(key)
         love.load() -- reload game
     elseif key == 'p' then
         isRunning = not isRunning
-    elseif key == 'space' then
-        player:fire()
     end
 end
 
@@ -131,6 +133,9 @@ function love.draw()
         drawCircle(object.collision)
     end
 
-    player:draw()
+    for _, player in ipairs(players) do
+        player:draw()
+    end
+
     love.graphics.pop()
 end

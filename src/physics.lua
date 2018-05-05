@@ -36,15 +36,17 @@ function physics.makeTriangle(x, y, w, h, isDynamic)
     return body
 end
 
-function physics.applyGravityForces(player, objects, planets)
+function physics.applyGravityForces(players, objects, planets)
     for _, object in ipairs(objects) do
         for _, planet in ipairs(planets) do
             physics.applyGravity(object.collision, planet.collision)
         end
     end
 
-    for _, planet in ipairs(planets) do
-        physics.applyGravity(player.collision, planet.collision)
+    for _, player in ipairs(players) do
+        for _, planet in ipairs(planets) do
+            physics.applyGravity(player.collision, planet.collision)
+        end
     end
 end
 
