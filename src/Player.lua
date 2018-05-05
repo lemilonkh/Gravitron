@@ -83,12 +83,15 @@ function Player:takeDamage()
     util.removeValue(self.lifeballs, self.lifeballs[1])
 end
 
-function Player:Death()
-
+function Player:death()
+    love.graphics.setColor(1, 1, 1)
+    font = love.graphics.newFont(400)
+    love.graphics.setFont(font)
+    love.graphics.print("GAME OVER", love.graphics.getWidth()/2 - 1230, love.graphics.getHeight()/2 - 300)
 end
 
 function Player:update(dt)
-    if #self.lifeballs <= 0 do
+    if #self.lifeballs <= 0 then
         Player:death()
     end
 

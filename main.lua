@@ -22,7 +22,8 @@ settings = {
 }
 
 function love.load()
-    -- make sure math.random actually returns different values every time the game is started
+    isOver = false
+        -- make sure math.random actually returns different values every time the game is started
     math.randomseed(os.time())
 
     -- make scaled up sprites pixel out nicely
@@ -199,6 +200,10 @@ function drawCircle(body)
 end
 
 function love.draw()
+    if isOver then
+        Player:death()
+    end
+
     love.graphics.push()
     local scale = love.graphics.getDPIScale()
     love.graphics.scale(scale)
