@@ -1,12 +1,5 @@
 local vector = require 'libs.hump.vector'
 
-image_earth = love.graphics.newImage( 'images/earth.png' )
-image_mars = love.graphics.newImage( 'images/mars.png' )
-image_neptun = love.graphics.newImage( 'images/neptun.png' )
-image_venus = love.graphics.newImage( 'images/venus.png' )
-image_sun = love.graphics.newImage( 'images/sun.png' )
-images_planets = {image_earth, image_mars, image_neptun, image_venus, image_sun}
-
 settings = {
     pixelsPerMeter = 35,
     movementSpeed = 15,
@@ -27,6 +20,14 @@ function love.load()
     player.sprite = love.graphics.newImage('sprites/delta_ship.png')
     local playerWidth, playerHeight = player.sprite:getPixelDimensions()
     player.collision = makeTriangle(150, 150, playerWidth, playerHeight, true)
+
+    -- load planet sprites
+    local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
+    planetSprites = {}
+    for _, planetName in ipairs(planetNames) do
+        local planetSprite = love.graphics.newImage('sprites/' .. planetName .. '.png')
+        table.insert(planetSprites, planetSprite)
+    end
 
     -- bullet attack
     player.bullets = {}
@@ -199,9 +200,7 @@ function love.draw()
         --love.graphics.setColor(0.7, 0.2, 0.2)
         --drawCircle(planet.collision)
         love.graphics.setColor(1, 1, 1)
-        love.graphics.draw(images_planets[i], planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2, 0, 0, 0, 0 )
-        --love.graphics.draw(image_earth, planet.x - planet.r, planet.y - planet.r)
-        --TODO
+        love.graphics.draw(planetSprites[i], planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
     end
 
     -- draw dynamic objects
