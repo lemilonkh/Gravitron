@@ -20,6 +20,8 @@ function Player:init(spriteName, x, y, controls, playerNum)
     self.movementSpeed = settings.movementSpeed
     self.isGhost = false
     self.isShielded = false
+
+    self.color = {1, 1, 1, 1}
 end
 
 function Player:fire()
@@ -34,10 +36,13 @@ end
 function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
         self.movementSpeed = 4 * self.movementSpeed
+        self.color = {1, 1, 0, 1}
     elseif powerup.type == 'ghost' then
         self.isGhost = true
+        self.color = {1, 1, 1, 0.5}
     elseif powerup.type == 'shield' then
         self.isShielded = true
+        self.color = {0, 0, 1, 1}
     end
 end
 
@@ -94,7 +99,7 @@ function Player:draw()
     end
 
     -- draw player
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(self.color)
     love.graphics.draw(
         self.sprite,
         self.collision:getX(), self.collision:getY(),
