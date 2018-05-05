@@ -49,6 +49,30 @@ function Player:fire()
     shotSounds[math.random(8)]:play()
 end
 
+function Player:onCollision(otherFixture)
+    local other = otherFixture:getUserData()
+    if not other then return end
+
+    -- when two players collide, the slowest one takes the damage
+    if other:instanceOf(Player) then
+        local ownVelocity = vector(self.collision:getLinearVelocity()):len2()
+        local otherVelocity = vector(other.collision:getLinearVelocity()):len2()
+
+        if ownVelocity < otherVelocity then
+            self:takeDamage()
+        elseif otherVelocity > ownVelocity then
+            other:takeDamage()
+        else
+            self:takeDamage()
+            other:takeDamage()
+        end
+    end
+
+    if other.isPlanet then
+        self:takeDamage()
+    end
+end
+
 function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
         lightningSounds[math.random(3)]:play()

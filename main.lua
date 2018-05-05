@@ -111,8 +111,9 @@ function addPlanet(x, y, r)
         x = x,
         y = y,
         r = r,
-        collision = physics.makeCircle(x, y, r, false)
+        isPlanet = true
     }
+    planet.collision = physics.makeCircle(x, y, r, false, planet)
     table.insert(planets, planet)
 end
 
