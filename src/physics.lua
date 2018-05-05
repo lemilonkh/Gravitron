@@ -70,7 +70,6 @@ function physics.makeTriangle(x, y, w, h, isDynamic, userData)
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(-w/2, 0, w/2, -h/2, w/2, h/2)
     local fixture = love.physics.newFixture(body, shape, 1)
-<<<<<<< HEAD
     fixture:setDensity(0.01)
     fixture:setFriction(1)
     fixture:setRestitution(0)
@@ -84,9 +83,6 @@ function physics.makeDiamond(x, y, w, h, isDynamic)
     local shape = love.physics.newPolygonShape(0, h/2, -w/2, 0, 0, -h/2, w/2, 0)
     local fixture = love.physics.newFixture(body, shape, 1)
     fixture:setDensity(0.01)
-=======
-    fixture:setDensity(1)
->>>>>>> 6f08fa8c302014f78a96e3fb79c7b7ee926e0dbd
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
