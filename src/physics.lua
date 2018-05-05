@@ -10,6 +10,7 @@ function physics.shouldFixturesCollide(a, b)
     local objectA, objectB = a:getUserData(), b:getUserData()
     local isPlayerInvolved = (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player))
     local isPowerupInvolved = (objectA and objectA:instanceOf(Powerup)) or (objectB and objectB:instanceOf(Powerup))
+    local isGhostInvolved = (objectA and objectA.isGhost) or (objectB and objectB.isGhost)
 
     if isPlayerInvolved and not isPowerupInvolved then
         crashSounds[love.math.random(6)]:play()
@@ -18,8 +19,8 @@ function physics.shouldFixturesCollide(a, b)
     if objectA and objectA.onCollision then objectA:onCollision(b) end
     if objectB and objectB.onCollision then objectB:onCollision(a) end
 
-    -- don't let player and powerups collide (would lose velocity)
-    return not (isPlayerInvolved and isPowerupInvolved)
+    -- don't let player and powerups collide (would lose velocity) and ignore all collisions with ghosts
+    return not (isGhostInvolved or (isPlayerInvolved and isPowerupInvolved))
 end
 
 function physics.makeCircle(x, y, r, isDynamic, userData)
