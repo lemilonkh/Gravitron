@@ -1,20 +1,28 @@
 local Player = class 'Player'
 local physics = require 'src.physics'
+local Lifeball = require 'src.Lifeball'
 
-function Player:init(spriteName, x, y, controls, playerNum)
+function Player:init(spriteName, x, y, controls)
     self.x, self.y = x, y
     self.controls = controls
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
+
     if spriteName == 'delta_ship' then
-        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true, self)
-        --print(spriteName, self.collision:getLinearDamping())
+        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
     elseif spriteName == 'omega_ship' then
-        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true, self)
-        --print(spriteName, self.collision:getLinearDamping())
+        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true)
     end
+
+    self.lifeballs = {}
+    for i = 1, settings.lifeballCount do
+        table.insert(self.lifeballs, Lifeball(spriteName, self.x, self.y))
+    end
+
     self.collision:setMass(0.5)
     self.collision:setLinearDamping(0.5)
+    self.collision:setUserData(self)
+    --TODO: Default ship, if none of the spriteName matches
     self.bullets = {}
 
     self.movementSpeed = settings.movementSpeed
@@ -27,6 +35,8 @@ function Player:init(spriteName, x, y, controls, playerNum)
         shield = love.graphics.newImage('sprites/energy_shield.png'),
         glow = love.graphics.newImage('sprites/glow.png')
     }
+
+    self.lifeballTimer = 0
 end
 
 function Player:fire()
@@ -76,7 +86,19 @@ function Player:activatePowerup(powerup)
     end
 end
 
+function Player:takeDamage()
+    util.removeValue(self.lifeballs, self.lifeballs[1])
+end
+
+function Player:Death()
+
+end
+
 function Player:update(dt)
+    if #self.lifeballs <= 0 do
+        Player:death()
+    end
+
     self.controls:update()
 
     local deltaAngle, deltaSpeed = self.controls:get('move')
@@ -110,6 +132,8 @@ function Player:update(dt)
     if self.controls:pressed('action') then
         self:fire()
     end
+
+    self.lifeballTimer = self.lifeballTimer + dt
 end
 
 function Player:getShapePoints()
@@ -149,6 +173,12 @@ function Player:draw()
         1, 1,
         self.sprite:getWidth() / 2, self.sprite:getHeight() / 2
     )
+
+    -- draw lifeballs
+    local angleOffset = 2 * math.pi * ((self.lifeballTimer / settings.lifeballRotationDuration) % 1)
+    for i, lifeball in ipairs (self.lifeballs) do
+        lifeball:draw(self, i, angleOffset)
+    end
 end
 
 return Player

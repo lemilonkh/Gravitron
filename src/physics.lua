@@ -3,35 +3,27 @@ local physics = {}
 function physics.init()
     love.physics.setMeter(settings.pixelsPerMeter)
     world = love.physics.newWorld(0, 0, true)
-    world:setCallbacks(physics.beginContact, physics.endContact, physics.preSolve, physics.postSolve)
+    world:setContactFilter(physics.shouldFixturesCollide)
 end
 
-function physics.beginContact(a, b, coll)
+function physics.shouldFixturesCollide(a, b)
     local objectA, objectB = a:getUserData(), b:getUserData()
+    local isPlayerInvolved = (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player))
+    local isPowerupInvolved = (objectA and objectA:instanceOf(Powerup)) or (objectB and objectB:instanceOf(Powerup))
+    local isGhostInvolved = (objectA and objectA.isGhost) or (objectB and objectB.isGhost)
 
-    if (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player)) then
-        if not (objectA and objectA:instanceOf(Powerup)) and not (objectB and objectB:instanceOf(Powerup)) then --delete this line after powerups ignore collisions
-            crashSounds[love.math.random(6)]:play()
-        end
+    if isPlayerInvolved and not isPowerupInvolved then
+        crashSounds[love.math.random(6)]:play()
     end
 
-    if objectA and objectA.onCollision then objectA:onCollision(b, coll) end
-    if objectB and objectB.onCollision then objectB:onCollision(a, coll) end
+    if objectA and objectA.onCollision then objectA:onCollision(b) end
+    if objectB and objectB.onCollision then objectB:onCollision(a) end
+
+    -- don't let player and powerups collide (would lose velocity) and ignore all collisions with ghosts
+    return not (isGhostInvolved or (isPlayerInvolved and isPowerupInvolved))
 end
 
-function physics.endContact(a, b, coll)
-
-end
-
-function physics.preSolve(a, b, coll)
-
-end
-
-function physics.postSolve(a, b, coll, normalImpulse, tangentImpulse)
-
-end
-
-function physics.makeCircle(x, y, r, isDynamic, userData)
+function physics.makeCircle(x, y, r, isDynamic)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newCircleShape(r)
@@ -40,15 +32,10 @@ function physics.makeCircle(x, y, r, isDynamic, userData)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
-    if userData then
-        body:setUserData(userData)
-        fixture:setUserData(userData)
-    end
-
     return body
 end
 
-function physics.makeBox(x, y, w, h, isDynamic, userData)
+function physics.makeBox(x, y, w, h, isDynamic)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newRectangleShape(w, h)
@@ -57,15 +44,10 @@ function physics.makeBox(x, y, w, h, isDynamic, userData)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
-    if userData then
-        body:setUserData(userData)
-        fixture:setUserData(userData)
-    end
-
     return body
 end
 
-function physics.makeTriangle(x, y, w, h, isDynamic, userData)
+function physics.makeTriangle(x, y, w, h, isDynamic)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(-w/2, 0, w/2, -h/2, w/2, h/2)
@@ -74,15 +56,10 @@ function physics.makeTriangle(x, y, w, h, isDynamic, userData)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
-    if userData then
-        body:setUserData(userData)
-        fixture:setUserData(userData)
-    end
-
     return body
 end
 
-function physics.makeDiamond(x, y, w, h, isDynamic, userData)
+function physics.makeDiamond(x, y, w, h, isDynamic)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(0, h/2, -w/2, 0, 0, -h/2, w/2, 0)
@@ -90,11 +67,6 @@ function physics.makeDiamond(x, y, w, h, isDynamic, userData)
     fixture:setDensity(0.01)
     fixture:setFriction(1)
     fixture:setRestitution(0)
-
-    if userData then
-        body:setUserData(userData)
-        fixture:setUserData(userData)
-    end
 
     return body
 end

@@ -10,8 +10,7 @@ function Powerup:init(x, y, type)
     self.collision = physics.makeCircle(self.x, self.y, self.radius, true, self)
 end
 
-function Powerup:onCollision(other, collision)
-    print('OnCollision!')
+function Powerup:onCollision(other)
     local userData = other:getUserData()
     if userData and userData:instanceOf(Player) then
         userData:activatePowerup(self)
@@ -21,6 +20,7 @@ end
 
 function Powerup:death()
     self.isAlive = false
+    self.collision:destroy()
 end
 
 function Powerup:draw()
