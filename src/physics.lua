@@ -7,8 +7,15 @@ function physics.init()
 end
 
 function physics.beginContact(a, b, coll)
-    local i = love.math.random(6)
-    crashSounds[i]:play()
+    local objectA, objectB = a:getUserData(), b:getUserData()
+
+    if (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player)) then
+        local i = love.math.random(6)
+        crashSounds[i]:play()
+    end
+
+    if objectA and objectA.onCollision then objectA:onCollision(b, coll) end
+    if objectB and objectB.onCollision then objectB:onCollision(a, coll) end
 end
 
 function physics.endContact(a, b, coll)

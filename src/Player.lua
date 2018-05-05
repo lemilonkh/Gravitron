@@ -7,7 +7,12 @@ function Player:init(spriteName, x, y, controls)
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
     self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
+    self.collision:setUserData(self)
     self.bullets = {}
+
+    self.movementSpeed = settings.movementSpeed
+    self.isGhost = false
+    self.isShielded = false
 end
 
 function Player:fire()
@@ -19,12 +24,22 @@ function Player:fire()
     bullet.collision:applyLinearImpulse(direction.x, direction.y)
 end
 
+function Player:activatePowerup(powerup)
+    if powerup.type == 'lightning' then
+        self.movementSpeed = 4 * self.movementSpeed
+    elseif powerup.type == 'ghost' then
+        self.isGhost = true
+    elseif powerup.type == 'shield' then
+        self.isShielded = true
+    end
+end
+
 function Player:update(dt)
     self.controls:update()
 
     local deltaAngle, deltaSpeed = self.controls:get('move')
     deltaAngle = deltaAngle * settings.turningSpeed * dt
-    deltaSpeed = deltaSpeed * settings.movementSpeed * dt
+    deltaSpeed = deltaSpeed * self.movementSpeed * dt
 
     local playerAngle = self.collision:getAngle() + deltaAngle
     self.collision:setAngle(playerAngle)

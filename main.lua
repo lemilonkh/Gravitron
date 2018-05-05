@@ -1,6 +1,6 @@
 class = require 'libs.30log'
 vector = require 'libs.hump.vector'
-local Player = require 'src.Player'
+Player = require 'src.Player'
 local physics = require 'src.physics'
 local controls = require 'src.controls'
 
