@@ -19,6 +19,28 @@ function Player:fire()
     bullet.collision:applyLinearImpulse(direction.x, direction.y)
 end
 
+function Player:update(dt)
+    local deltaAngle, deltaSpeed = 0, 0
+    if love.keyboard.isDown("up") then
+        deltaSpeed = -settings.movementSpeed
+    end
+    if love.keyboard.isDown("down") then
+        deltaSpeed = settings.movementSpeed
+    end
+    if love.keyboard.isDown("left") then
+        deltaAngle = -settings.turningSpeed
+    end
+    if love.keyboard.isDown("right") then
+        deltaAngle = settings.turningSpeed
+    end
+
+    local playerAngle = self.collision:getAngle() + deltaAngle * dt
+    self.collision:setAngle(playerAngle)
+
+    local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed * dt, math.sin(playerAngle) * deltaSpeed * dt
+    self.collision:applyLinearImpulse(impulseX, impulseY)
+end
+
 function Player:draw()
     -- draw bullets
     for _, bullet in ipairs(player.bullets) do

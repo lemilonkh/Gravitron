@@ -55,26 +55,7 @@ end
 function love.update(dt)
     if not isRunning then return end
 
-    local deltaAngle, deltaSpeed = 0, 0
-    if love.keyboard.isDown("up") then
-        deltaSpeed = -settings.movementSpeed
-    end
-    if love.keyboard.isDown("down") then
-        deltaSpeed = settings.movementSpeed
-    end
-    if love.keyboard.isDown("left") then
-        deltaAngle = -settings.turningSpeed
-    end
-    if love.keyboard.isDown("right") then
-        deltaAngle = settings.turningSpeed
-    end
-
-    local playerAngle = player.collision:getAngle() + deltaAngle * dt
-    player.collision:setAngle(playerAngle)
-
-    local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed * dt, math.sin(playerAngle) * deltaSpeed * dt
-    player.collision:applyLinearImpulse(impulseX, impulseY)
-
+    player:update(dt)
     world:update(dt)
     applyGravityForces()
 
