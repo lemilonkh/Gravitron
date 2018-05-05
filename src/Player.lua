@@ -1,12 +1,23 @@
 local Player = class 'Player'
 local physics = require 'src.physics'
 
-function Player:init(x, y)
+function Player:init(x, y, controls)
     self.x, self.y = x, y
+    self.controls = controls
     self.sprite = love.graphics.newImage('sprites/delta_ship.png')
     self.width, self.height = self.sprite:getDimensions()
     self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
     self.bullets = {}
+end
+
+function love.update(dt)
+    input:update()
+
+    local x, y = input:get 'move'
+    playerShip:move(x*100, y*100)
+    if input:pressed 'action' then
+        playerShip:shoot()
+    end
 end
 
 -- bullet attack
@@ -20,24 +31,16 @@ function Player:fire()
 end
 
 function Player:update(dt)
-    local deltaAngle, deltaSpeed = 0, 0
-    if love.keyboard.isDown('up') then
-        deltaSpeed = -settings.movementSpeed
-    end
-    if love.keyboard.isDown('down') then
-        deltaSpeed = settings.movementSpeed
-    end
-    if love.keyboard.isDown('left') then
-        deltaAngle = -settings.turningSpeed
-    end
-    if love.keyboard.isDown('right') then
-        deltaAngle = settings.turningSpeed
-    end
+    self.controls:update()
 
-    local playerAngle = self.collision:getAngle() + deltaAngle * dt
+    local deltaAngle, deltaSpeed = self.controls:get('move')
+    deltaAngle = deltaAngle * settings.turningSpeed * dt
+    deltaSpeed = deltaSpeed * settings.movementSpeed * dt
+
+    local playerAngle = self.collision:getAngle() + deltaAngle
     self.collision:setAngle(playerAngle)
 
-    local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed * dt, math.sin(playerAngle) * deltaSpeed * dt
+    local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed, math.sin(playerAngle) * deltaSpeed
     self.collision:applyLinearImpulse(impulseX, impulseY)
 
     local position = vector(self:getPosition())

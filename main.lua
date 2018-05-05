@@ -2,6 +2,7 @@ class = require 'libs.30log'
 vector = require 'libs.hump.vector'
 local Player = require 'src.Player'
 local physics = require 'src.physics'
+local controls = require 'src.controls'
 
 settings = {
     pixelsPerMeter = 35,
@@ -33,7 +34,7 @@ function love.load()
     objects = {} -- dynamic objects
     world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
-    player = Player(150, 150)
+    player = Player(150, 150, controls[1])
 
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
