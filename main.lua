@@ -15,6 +15,7 @@ settings = {
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
     bulletSize = 20,
     powerupTime = 5, -- seconds after pickup
+    powerupSpawnInterval = 5, -- seconds between new powerups being spawned
 }
 
 function love.load()
@@ -52,6 +53,12 @@ function love.load()
     powerups = {
         Powerup(100, 100, 'lightning')
     }
+    Timer.every(settings.powerupSpawnInterval, function()
+        local types = {'lightning', 'shield', 'ghost' }
+        local x, y = getRandomPosition()
+        local powerup = Powerup(x, y, types[love.math.random(3)])
+        table.insert(powerups, powerup)
+    end)
 
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
@@ -63,12 +70,19 @@ function love.load()
     
     for i = 1, settings.planetCount do
         local radius = love.math.random(50, 100)
-        addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), radius)
+        local x, y = getRandomPosition()
+        addPlanet(x, y, radius)
     end
 
     for i = 1, settings.objectCount do
-        addObject(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), 10)
+        local x, y = getRandomPosition()
+        addObject(x, y, 10)
     end
+end
+
+function getRandomPosition()
+    local x, y = love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight()
+    return x, y
 end
 
 function addPlanet(x, y, r)
