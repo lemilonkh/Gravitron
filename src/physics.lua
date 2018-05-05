@@ -1,5 +1,28 @@
 local physics = {}
 
+function physics.init()
+    love.physics.setMeter(settings.pixelsPerMeter)
+    world = love.physics.newWorld(0, 0, true)
+    world:setCallbacks(physics.beginContact, physics.endContact, physics.preSolve, physics.postSolve)
+end
+
+function physics.beginContact(a, b, coll)
+    local i = love.math.random(6)
+    crashSounds[i]:play()
+end
+
+function physics.endContact(a, b, coll)
+
+end
+
+function physics.preSolve(a, b, coll)
+
+end
+
+function physics.postSolve(a, b, coll, normalImpulse, tangentImpulse)
+
+end
+
 function physics.makeCircle(x, y, r, isDynamic)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
