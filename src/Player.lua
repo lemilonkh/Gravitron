@@ -10,7 +10,6 @@ function Player:init(spriteName, x, y, controls)
     self.bullets = {}
 end
 
--- bullet attack
 function Player:fire()
     local bullet = {}
     bullet.x, bullet.y = self.collision:getWorldCenter()
