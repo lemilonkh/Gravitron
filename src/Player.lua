@@ -2,9 +2,10 @@ local Player = class 'Player'
 local physics = require 'src.physics'
 
 function Player:init(x, y)
+    self.x, self.y = x, y
     self.sprite = love.graphics.newImage('sprites/delta_ship.png')
     self.width, self.height = self.sprite:getDimensions()
-    self.collision = physics.makeTriangle(150, 150, self.width, self.height, true)
+    self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
     self.bullets = {}
 end
 
