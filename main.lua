@@ -52,7 +52,8 @@ function love.load()
     end
     
     for i = 1, settings.planetCount do
-        addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), i * 10)
+        local radius = love.math.random(50, 200)
+        addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), radius)
     end
 
     for i = 1, settings.objectCount do
