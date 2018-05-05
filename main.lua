@@ -10,12 +10,28 @@ settings = {
 }
 
 function love.load()
+    musicTrack = love.audio.newSource("sound/Okatoka.mp3", "static")
+    local i = 1
+    crashSounds = {}
+    while(i <= 6) do
+        crashSound = love.audio.newSource("sound/crash" .. i .. ".mp3", "static")
+        table.insert(crashSounds, crashSound)
+        i = i + 1
+    end
+    crashsound = love.audio.newSource("sound/crash1.mp3", "static")
+    musicTrack:setLooping(true)
+    musicTrack:play()
+
     isRunning = true
     love.physics.setMeter(settings.pixelsPerMeter)
     world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
     player = {}
+
+    world:setCallbacks(beginContact, endContact, preSolve, postSolve)
+ 
+
 
     player.sprite = love.graphics.newImage('sprites/delta_ship.png')
     local playerWidth, playerHeight = player.sprite:getPixelDimensions()
@@ -48,6 +64,24 @@ function love.load()
         addObject(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), 10)
     end
 end
+
+function beginContact(a, b, coll)
+    local i = love.math.random( 6 )
+    crashSounds[i]:play()
+end
+ 
+function endContact(a, b, coll)
+ 
+end
+ 
+function preSolve(a, b, coll)
+ 
+end
+ 
+function postSolve(a, b, coll, normalimpulse, tangentimpulse)
+ 
+end
+
 
 function addPlanet(x, y, r)
 	local planet = {}
