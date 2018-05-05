@@ -1,5 +1,12 @@
 local vector = require 'libs.hump.vector'
 
+image_earth = love.graphics.newImage( 'images/earth.png' )
+image_mars = love.graphics.newImage( 'images/mars.png' )
+image_neptun = love.graphics.newImage( 'images/neptun.png' )
+image_venus = love.graphics.newImage( 'images/venus.png' )
+image_sun = love.graphics.newImage( 'images/sun.png' )
+images_planets = {image_earth, image_mars, image_neptun, image_venus, image_sun}
+
 settings = {
     pixelsPerMeter = 35,
     movementSpeed = 15,
@@ -43,7 +50,10 @@ end
 function addPlanet(x, y, r)
 	local planet = {}
 	planet.collision = makeCircle(x, y, r, false)
-    table.insert(planets, planet)
+        planet.x=x --TODO
+        planet.y=y
+	planet.r=r
+        table.insert(planets, planet)
 end
 
 function addObject(x, y, r)
@@ -184,9 +194,13 @@ function love.draw()
     love.graphics.setColor(1, 1, 1)
 
     -- draw static planets
-    for _, planet in ipairs(planets) do
-        love.graphics.setColor(0.7, 0.2, 0.2)
-        drawCircle(planet.collision)
+    for i, planet in ipairs(planets) do
+        --love.graphics.setColor(0.7, 0.2, 0.2)
+        --drawCircle(planet.collision)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(images_planets[i], planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2, 0, 0, 0, 0 )
+        --love.graphics.draw(image_earth, planet.x - planet.r, planet.y - planet.r)
+        --TODO
     end
 
     -- draw dynamic objects
@@ -194,6 +208,8 @@ function love.draw()
         love.graphics.setColor(0.2, 0.8, 0.7)
         drawCircle(object.collision)
     end
+
+
 
     -- draw bullets
     for _, bullet in ipairs(player.bullets) do
