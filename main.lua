@@ -166,19 +166,6 @@ function love.draw()
         drawCircle(object.collision)
     end
 
-    -- draw bullets
-    for _, bullet in ipairs(player.bullets) do
-        love.graphics.setColor(1, 0, 0, 1)
-        --love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
-        local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
-        love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
-    end
-
-    -- draw player
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.polygon('line', getPlayerPoints())
-    local playerBody = player.collision
-    love.graphics.draw(player.sprite, playerBody:getX(), playerBody:getY(), playerBody:getAngle(), 1, 1, player.sprite:getWidth()/2, player.sprite:getHeight()/2)
-
+    player:draw()
     love.graphics.pop()
 end

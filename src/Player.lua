@@ -19,4 +19,24 @@ function Player:fire()
     bullet.collision:applyLinearImpulse(direction.x, direction.y)
 end
 
+function Player:draw()
+    -- draw bullets
+    for _, bullet in ipairs(player.bullets) do
+        love.graphics.setColor(1, 0, 0, 1)
+        --love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
+        local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
+        love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
+    end
+
+    -- draw player
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(
+        self.sprite,
+        self.collision:getX(), self.collision:getY(),
+        self.collision:getAngle(),
+        1, 1,
+        self.sprite:getWidth() / 2, self.sprite:getHeight() / 2
+    )
+end
+
 return Player
