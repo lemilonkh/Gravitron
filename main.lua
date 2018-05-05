@@ -6,8 +6,8 @@ local controls = require 'src.controls'
 
 settings = {
     pixelsPerMeter = 35,
-    movementSpeed = 50, -- acceleration in px per second
-    turningSpeed = math.pi, -- rad per second
+    movementSpeed = 100, -- acceleration in px per second
+    turningSpeed = math.pi / 2, -- rad per second
     planetCount = 5,
     objectCount = 20,
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
