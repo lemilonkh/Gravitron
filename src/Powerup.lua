@@ -11,6 +11,10 @@ function Powerup:init(x, y, type)
 end
 
 function Powerup:onCollision(other, collision)
+    if     self.type == 'ghost'     then     ghostSounds[math.random(3)]:play()
+    elseif self.type == 'shield'    then    shieldSounds[math.random(3)]:play()
+    elseif self.type == 'lightning' then lightningSounds[math.random(3)]:play()
+    end
     print('OnCollision!')
     local userData = other:getUserData()
     if userData and userData:instanceOf(Player) then

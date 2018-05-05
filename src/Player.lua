@@ -29,6 +29,7 @@ function Player:fire()
     table.insert(self.bullets, bullet)
     local direction = vector(self.collision:getLinearVelocity()):normalized() * 100
     bullet.collision:applyLinearImpulse(direction.x, direction.y)
+    shotSounds[math.random(8)]:play()
 end
 
 function Player:activatePowerup(powerup)
