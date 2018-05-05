@@ -11,7 +11,6 @@ function Powerup:init(x, y, type)
 end
 
 function Powerup:onCollision(other, collision)
-    print('OnCollision!')
     local userData = other:getUserData()
     if userData and userData:instanceOf(Player) then
         userData:activatePowerup(self)
