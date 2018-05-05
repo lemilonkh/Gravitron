@@ -32,8 +32,8 @@ function love.load()
     world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
     players = {
-        Player(150, 150, controls[1]),
-        Player(love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
+        Player('delta_ship', 150, 150, controls[1]),
+        Player('omega_ship', love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
     }
 
     -- load planet sprites
