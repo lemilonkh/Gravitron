@@ -1,12 +1,20 @@
 local Player = class 'Player'
 local physics = require 'src.physics'
 
-function Player:init(spriteName, x, y, controls)
+function Player:init(spriteName, x, y, controls, playerNum)
     self.x, self.y = x, y
     self.controls = controls
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
-    self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true, self)
+    if spriteName == 'delta_ship' then
+        self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true, self)
+        --print(spriteName, self.collision:getLinearDamping())
+    elseif spriteName == 'omega_ship' then
+        self.collision = physics.makeDiamond(self.x, self.y, self.width, self.height, true, self)
+        --print(spriteName, self.collision:getLinearDamping())
+    end
+    self.collision:setMass(0.5)
+    self.collision:setLinearDamping(0.5)
     self.bullets = {}
 
     self.movementSpeed = settings.movementSpeed
