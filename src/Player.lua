@@ -29,6 +29,11 @@ function Player:update(dt)
     local playerAngle = self.collision:getAngle() + deltaAngle
     self.collision:setAngle(playerAngle)
 
+    -- reset angular velocity so the player doesn't have to fight it
+    if math.abs(deltaAngle) > 0 then
+        self.collision:setAngularVelocity(0)
+    end
+
     local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed, math.sin(playerAngle) * deltaSpeed
     self.collision:applyLinearImpulse(impulseX, impulseY)
 
