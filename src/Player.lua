@@ -35,6 +35,8 @@ function Player:init(spriteName, x, y, controls)
         shield = love.graphics.newImage('sprites/energy_shield.png'),
         glow = love.graphics.newImage('sprites/glow.png')
     }
+
+    self.lifeballTimer = 0
 end
 
 function Player:fire()
@@ -111,6 +113,8 @@ function Player:update(dt)
     if self.controls:pressed('action') then
         self:fire()
     end
+
+    self.lifeballTimer = self.lifeballTimer + dt
 end
 
 function Player:getShapePoints()
@@ -152,8 +156,9 @@ function Player:draw()
     )
 
     -- draw lifeballs
+    local angleOffset = 2 * math.pi * ((self.lifeballTimer / settings.lifeballRotationDuration) % 1)
     for i, lifeball in ipairs (self.lifeballs) do
-        lifeball:draw(self, i)
+        lifeball:draw(self, i, angleOffset)
     end
 end
 

@@ -22,10 +22,10 @@ function Lifeball:death()
     self.isAlive = false
 end
 
-function Lifeball:draw(player, lifeballNum)
+function Lifeball:draw(player, lifeballNum, angleOffset)
     if not self.isAlive then return end
 
-    alpha = ((math.pi * 2) / settings.lifeballCount) * lifeballNum - 1
+    alpha = ((math.pi * 2) / settings.lifeballCount) * lifeballNum - 1 + angleOffset
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite,

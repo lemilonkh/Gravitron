@@ -18,6 +18,7 @@ settings = {
     lifeballDistance = 64, -- distance from player ship
     powerupTime = 5, -- seconds after pickup
     powerupSpawnInterval = 10, -- seconds between new powerups being spawned
+    lifeballRotationDuration = 5
 }
 
 function love.load()
