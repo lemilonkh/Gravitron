@@ -36,4 +36,35 @@ function physics.makeTriangle(x, y, w, h, isDynamic)
     return body
 end
 
+function physics.applyGravityForces(player, objects, planets)
+    for _, object in ipairs(objects) do
+        for _, planet in ipairs(planets) do
+            physics.applyGravity(object.collision, planet.collision)
+        end
+    end
+
+    for _, planet in ipairs(planets) do
+        physics.applyGravity(player.collision, planet.collision)
+    end
+end
+
+function physics.applyGravity(body, planet)
+    local bodyPosition = vector(body:getWorldCenter())
+
+    local shape = planet:getFixtures()[1]:getShape()
+    local radius = shape:getRadius()
+    local planetPosition = vector(planet:getWorldCenter())
+
+    local bodyToPlanet = bodyPosition - planetPosition
+    local distanceToPlanet = bodyToPlanet:len()
+
+    if distanceToPlanet <= radius * settings.maxGravityDistance then
+        local force = -bodyToPlanet:clone()
+
+        local sum = math.abs(force.x) + math.abs(force.y)
+        force = force * (1 / sum * radius / distanceToPlanet) * 2
+        body:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
+    end
+end
+
 return physics

@@ -1,6 +1,5 @@
-local Player = class "Player"
-local physics = require "src.physics"
-local vector = require "libs.hump.vector"
+local Player = class 'Player'
+local physics = require 'src.physics'
 
 function Player:init(x, y)
     self.sprite = love.graphics.newImage('sprites/delta_ship.png')
@@ -21,16 +20,16 @@ end
 
 function Player:update(dt)
     local deltaAngle, deltaSpeed = 0, 0
-    if love.keyboard.isDown("up") then
+    if love.keyboard.isDown('up') then
         deltaSpeed = -settings.movementSpeed
     end
-    if love.keyboard.isDown("down") then
+    if love.keyboard.isDown('down') then
         deltaSpeed = settings.movementSpeed
     end
-    if love.keyboard.isDown("left") then
+    if love.keyboard.isDown('left') then
         deltaAngle = -settings.turningSpeed
     end
-    if love.keyboard.isDown("right") then
+    if love.keyboard.isDown('right') then
         deltaAngle = settings.turningSpeed
     end
 

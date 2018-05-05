@@ -1,5 +1,5 @@
 class = require 'libs.30log'
-local vector = require 'libs.hump.vector'
+vector = require 'libs.hump.vector'
 local Player = require 'src.Player'
 local physics = require 'src.physics'
 
@@ -57,7 +57,7 @@ function love.update(dt)
 
     player:update(dt)
     world:update(dt)
-    applyGravityForces()
+    physics.applyGravityForces(player, objects, planets)
 
     local playerPosition = vector(player:getPosition())
     local warpedPosition = playerPosition:clone()
@@ -65,37 +65,6 @@ function love.update(dt)
     warpedPosition.y = math.abs(warpedPosition.y % love.graphics.getHeight())
     if playerPosition:dist(warpedPosition) > 0 then
         player.collision:setPosition(warpedPosition.x, warpedPosition.y)
-    end
-end
-
-function applyGravityForces()
-    for _, object in ipairs(objects) do
-		for _, planet in ipairs(planets) do
-            applyGravity(object.collision, planet.collision)
-        end
-    end
-
-    for _, planet in ipairs(planets) do
-        applyGravity(player.collision, planet.collision)
-    end
-end
-
-function applyGravity(body, planet)
-    local bodyPosition = vector(body:getWorldCenter())
-
-    local shape = planet:getFixtures()[1]:getShape()
-    local radius = shape:getRadius()
-    local planetPosition = vector(planet:getWorldCenter())
-
-    local bodyToPlanet = bodyPosition - planetPosition
-    local distanceToPlanet = bodyToPlanet:len()
-
-    if distanceToPlanet <= radius * settings.maxGravityDistance then
-        local force = -bodyToPlanet:clone()
-
-        local sum = math.abs(force.x) + math.abs(force.y)
-        force = force * (1 / sum * radius / distanceToPlanet) * 2
-        body:applyForce(force.x, force.y, bodyPosition.x, bodyPosition.y)
     end
 end
 
