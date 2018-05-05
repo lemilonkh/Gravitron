@@ -25,7 +25,7 @@ function love.load()
         table.insert(crashSounds, crashSound)
     end
     musicTrack:setLooping(true)
-    musicTrack:play()
+    --musicTrack:play()
 
     local backgroundFiles = love.filesystem.getDirectoryItems('backgrounds')
     local randomBackgroundFile = backgroundFiles[math.random(#backgroundFiles)]
