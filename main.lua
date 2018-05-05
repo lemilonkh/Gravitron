@@ -59,7 +59,7 @@ function love.update(dt)
     world:update(dt)
     applyGravityForces()
 
-    local playerPosition = vector(getPlayerPosition())
+    local playerPosition = vector(player:getPosition())
     local warpedPosition = playerPosition:clone()
     warpedPosition.x = math.abs(warpedPosition.x % love.graphics.getWidth())
     warpedPosition.y = math.abs(warpedPosition.y % love.graphics.getHeight())
@@ -116,14 +116,6 @@ end
 function drawCircle(body)
     local radius = body:getFixtures()[1]:getShape():getRadius()
     love.graphics.circle('fill', body:getX(), body:getY(), radius)
-end
-
-function getPlayerPoints()
-    return player.collision:getWorldPoints(player.collision:getFixtures()[1]:getShape():getPoints())
-end
-
-function getPlayerPosition()
-    return player.collision:getWorldCenter()
 end
 
 function love.draw()

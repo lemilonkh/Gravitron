@@ -41,9 +41,17 @@ function Player:update(dt)
     self.collision:applyLinearImpulse(impulseX, impulseY)
 end
 
+function Player:getShapePoints()
+    return self.collision:getWorldPoints(self.collision:getFixtures()[1]:getShape():getPoints())
+end
+
+function Player:getPosition()
+    return self.collision:getWorldCenter()
+end
+
 function Player:draw()
     -- draw bullets
-    for _, bullet in ipairs(player.bullets) do
+    for _, bullet in ipairs(self.bullets) do
         love.graphics.setColor(1, 0, 0, 1)
         --love.graphics.circle("fill", bullet.x, bullet.y, settings.playerSize/2)
         local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
