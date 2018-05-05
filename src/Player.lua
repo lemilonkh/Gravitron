@@ -6,8 +6,7 @@ function Player:init(spriteName, x, y, controls)
     self.controls = controls
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
-    self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
-    self.collision:setUserData(self)
+    self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true, self)
     self.bullets = {}
 
     self.movementSpeed = settings.movementSpeed

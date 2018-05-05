@@ -7,10 +7,11 @@ function Powerup:init(x, y, type)
     self.isAlive = true
     self.sprite = love.graphics.newImage('sprites/' .. type .. '.png')
     self.radius = self.sprite:getWidth() / 2
-    self.collision = physics.makeCircle(self.x, self.y, self.radius, true)
+    self.collision = physics.makeCircle(self.x, self.y, self.radius, true, self)
 end
 
 function Powerup:onCollision(other, collision)
+    print('OnCollision!')
     local userData = other:getUserData()
     if userData and userData:instanceOf(Player) then
         userData:activatePowerup(self)
