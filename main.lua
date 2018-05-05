@@ -72,50 +72,6 @@ function love.load()
         Player('delta_ship', 150, 150, controls[1]),
         Player('omega_ship', love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
     }
-    
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
-
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
-
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
-
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
-    for i, planet in ipairs(planets) do
-        --love.graphics.setColor(0.7, 0.2, 0.2)
-        --drawCircle(planet.collision)
-        love.graphics.setColor(1, 1, 1)
-        local planetSprite = planetSprites[(i % #planetSprites) + 1]
-        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
-    end
 
     powerups = {}
     Timer.every(settings.powerupSpawnInterval, function()
@@ -125,10 +81,6 @@ function love.load()
         table.insert(powerups, powerup)
     end)
 
-    -- draw dynamic objects
-    for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-    end
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
     planetSprites = {}
