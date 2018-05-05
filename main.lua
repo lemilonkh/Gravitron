@@ -8,7 +8,7 @@ settings = {
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
     turningSpeed = math.pi / 2, -- rad per second
-    planetCount = 5,
+    planetCount = 10,
     objectCount = 20,
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
     bulletSize = 20
@@ -135,7 +135,8 @@ function love.draw()
         --love.graphics.setColor(0.7, 0.2, 0.2)
         --drawCircle(planet.collision)
         love.graphics.setColor(1, 1, 1)
-        love.graphics.draw(planetSprites[i], planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
+        local planetSprite = planetSprites[(i % #planetSprites) + 1]
+        love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
     end
 
     -- draw dynamic objects
