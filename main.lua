@@ -1,8 +1,8 @@
 class = require 'libs.30log'
 vector = require 'libs.hump.vector'
 Player = require 'src.Player'
+Powerup = require 'src.Powerup'
 Timer = require 'libs.hump.timer'
-local Powerup = require 'src.Powerup'
 local physics = require 'src.physics'
 local controls = require 'src.controls'
 
@@ -30,6 +30,26 @@ function love.load()
     for i = 1, 6 do
         local crashSound = love.audio.newSource('sounds/crash' .. i .. '.mp3', 'static')
         table.insert(crashSounds, crashSound)
+    end
+    ghostSounds = {}
+    for i = 1, 3 do
+        local ghostSound = love.audio.newSource('sounds/ghost' .. i .. '.wav', 'static')
+        table.insert(ghostSounds, ghostSound)
+    end
+    lightningSounds = {}
+    for i = 1, 3 do
+        local lightningSound = love.audio.newSource('sounds/lightning' .. i .. '.wav', 'static')
+        table.insert(lightningSounds, lightningSound)
+    end
+    shieldSounds = {}
+    for i = 1, 3 do
+        local shieldSound = love.audio.newSource('sounds/shield' .. i .. '.wav', 'static')
+        table.insert(shieldSounds, shieldSound)
+    end
+    shotSounds = {}
+    for i = 1, 8 do
+        local shotSound = love.audio.newSource('sounds/shot' .. i .. '.wav', 'static')
+        table.insert(shotSounds, shotSound)
     end
     musicTrack:setLooping(true)
     musicTrack:play()
