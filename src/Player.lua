@@ -39,6 +39,19 @@ function Player:update(dt)
 
     local impulseX, impulseY = math.cos(playerAngle) * deltaSpeed * dt, math.sin(playerAngle) * deltaSpeed * dt
     self.collision:applyLinearImpulse(impulseX, impulseY)
+
+    local position = vector(self:getPosition())
+    local margin = 10
+    local width, height = love.graphics.getDimensions()
+    local warpedPosition = position:clone()
+    if position.x < -margin then warpedPosition.x = width end
+    if position.x > width + margin then warpedPosition.x = 0 end
+    if position.y < -margin then warpedPosition.y = height end
+    if position.y > height + margin then warpedPosition.y = 0 end
+
+    if position:dist(warpedPosition) > 0 then
+        player.collision:setPosition(warpedPosition.x, warpedPosition.y)
+    end
 end
 
 function Player:getShapePoints()

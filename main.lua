@@ -58,14 +58,6 @@ function love.update(dt)
     player:update(dt)
     world:update(dt)
     physics.applyGravityForces(player, objects, planets)
-
-    local playerPosition = vector(player:getPosition())
-    local warpedPosition = playerPosition:clone()
-    warpedPosition.x = math.abs(warpedPosition.x % love.graphics.getWidth())
-    warpedPosition.y = math.abs(warpedPosition.y % love.graphics.getHeight())
-    if playerPosition:dist(warpedPosition) > 0 then
-        player.collision:setPosition(warpedPosition.x, warpedPosition.y)
-    end
 end
 
 function love.keypressed(key)
