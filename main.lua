@@ -1,20 +1,23 @@
 class = require 'libs.30log'
 vector = require 'libs.hump.vector'
 Player = require 'src.Player'
-local Powerup = require 'src.Powerup'
+Powerup = require 'src.Powerup'
+Timer = require 'libs.hump.timer'
 local physics = require 'src.physics'
 local controls = require 'src.controls'
 
 settings = {
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
-    turningSpeed = math.pi / 2, -- rad per second
+    turningSpeed = math.pi, -- rad per second
     planetCount = 10,
     objectCount = 20,
     maxGravityDistance = 3, -- factor for radius of maximum gravity excertion
     bulletSize = 20,
     lifeballCount = 5,
-    lifeballDistance = 64 -- distance from player ship
+    lifeballDistance = 64, -- distance from player ship
+    powerupTime = 5, -- seconds after pickup
+    powerupSpawnInterval = 10, -- seconds between new powerups being spawned
 }
 
 function love.load()
@@ -24,17 +27,37 @@ function love.load()
     -- make scaled up sprites pixel out nicely
     love.graphics.setDefaultFilter('nearest')
 
-    local musicTrack = love.audio.newSource('sounds/Okatoka.mp3', 'static')
+    local musicTrack = love.audio.newSource('sounds/LeMilonkh_Where_No_Man_Has_Gone_Before.ogg', 'stream')
     crashSounds = {}
     for i = 1, 6 do
         local crashSound = love.audio.newSource('sounds/crash' .. i .. '.mp3', 'static')
         table.insert(crashSounds, crashSound)
     end
+    ghostSounds = {}
+    for i = 1, 3 do
+        local ghostSound = love.audio.newSource('sounds/ghost' .. i .. '.wav', 'static')
+        table.insert(ghostSounds, ghostSound)
+    end
+    lightningSounds = {}
+    for i = 1, 3 do
+        local lightningSound = love.audio.newSource('sounds/lightning' .. i .. '.wav', 'static')
+        table.insert(lightningSounds, lightningSound)
+    end
+    shieldSounds = {}
+    for i = 1, 3 do
+        local shieldSound = love.audio.newSource('sounds/shield' .. i .. '.wav', 'static')
+        table.insert(shieldSounds, shieldSound)
+    end
+    shotSounds = {}
+    for i = 1, 8 do
+        local shotSound = love.audio.newSource('sounds/shot' .. i .. '.wav', 'static')
+        table.insert(shotSounds, shotSound)
+    end
     musicTrack:setLooping(true)
-    --musicTrack:play()
+    musicTrack:play()
 
     local backgroundFiles = love.filesystem.getDirectoryItems('backgrounds')
-    local randomBackgroundFile = backgroundFiles[math.random(#backgroundFiles)]
+    local randomBackgroundFile = backgroundFiles[love.math.random(#backgroundFiles)]
     backgroundImage = love.graphics.newImage('backgrounds/' .. randomBackgroundFile)
 
     isRunning = true
@@ -47,10 +70,6 @@ function love.load()
     players = {
         Player('delta_ship', 150, 150, controls[1]),
         Player('omega_ship', love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
-    }
-
-    powerups = {
-        Powerup(100, 100, 'lightning')
     }
     
     for i, planet in ipairs(planets) do
@@ -96,6 +115,14 @@ function love.load()
         local planetSprite = planetSprites[(i % #planetSprites) + 1]
         love.graphics.draw(planetSprite, planet.x - planet.r, planet.y - planet.r, 0, planet.r/52*2, planet.r/52*2)
     end
+
+    powerups = {}
+    Timer.every(settings.powerupSpawnInterval, function()
+        local types = {'lightning', 'shield', 'ghost' }
+        local x, y = getRandomPosition()
+        local powerup = Powerup(x, y, types[love.math.random(3)])
+        table.insert(powerups, powerup)
+    end)
 
     -- draw dynamic objects
     for _, object in ipairs(objects) do
@@ -111,12 +138,19 @@ function love.load()
     
     for i = 1, settings.planetCount do
         local radius = love.math.random(50, 100)
-        addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), radius)
+        local x, y = getRandomPosition()
+        addPlanet(x, y, radius)
     end
 
     for i = 1, settings.objectCount do
-        addObject(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), 10)
+        local x, y = getRandomPosition()
+        addObject(x, y, 10)
     end
+end
+
+function getRandomPosition()
+    local x, y = love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight()
+    return x, y
 end
 
 function addPlanet(x, y, r)
@@ -136,6 +170,8 @@ end
 
 function love.update(dt)
     if not isRunning then return end
+
+    Timer.update(dt)
 
     for i = 1, #players do
         players[i]:update(dt)

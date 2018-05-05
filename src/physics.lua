@@ -3,31 +3,23 @@ local physics = {}
 function physics.init()
     love.physics.setMeter(settings.pixelsPerMeter)
     world = love.physics.newWorld(0, 0, true)
-    world:setCallbacks(physics.beginContact, physics.endContact, physics.preSolve, physics.postSolve)
+    world:setContactFilter(physics.shouldFixturesCollide)
 end
 
-function physics.beginContact(a, b, coll)
+function physics.shouldFixturesCollide(a, b)
     local objectA, objectB = a:getUserData(), b:getUserData()
+    local isPlayerInvolved = (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player))
+    local isPowerupInvolved = (objectA and objectA:instanceOf(Powerup)) or (objectB and objectB:instanceOf(Powerup))
 
-    if (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player)) then
-        local i = love.math.random(6)
-        crashSounds[i]:play()
+    if isPlayerInvolved and not isPowerupInvolved then
+        crashSounds[love.math.random(6)]:play()
     end
 
-    if objectA and objectA.onCollision then objectA:onCollision(b, coll) end
-    if objectB and objectB.onCollision then objectB:onCollision(a, coll) end
-end
+    if objectA and objectA.onCollision then objectA:onCollision(b) end
+    if objectB and objectB.onCollision then objectB:onCollision(a) end
 
-function physics.endContact(a, b, coll)
-
-end
-
-function physics.preSolve(a, b, coll)
-
-end
-
-function physics.postSolve(a, b, coll, normalImpulse, tangentImpulse)
-
+    -- don't let player and powerups collide (would lose velocity)
+    return not (isPlayerInvolved and isPowerupInvolved)
 end
 
 function physics.makeCircle(x, y, r, isDynamic)
