@@ -1,6 +1,7 @@
 class = require 'libs.30log'
 vector = require 'libs.hump.vector'
 Player = require 'src.Player'
+local Powerup = require 'src.Powerup'
 local physics = require 'src.physics'
 local controls = require 'src.controls'
 
@@ -44,6 +45,10 @@ function love.load()
     players = {
         Player('delta_ship', 150, 150, controls[1]),
         Player('omega_ship', love.graphics.getHeight() - 150, love.graphics.getWidth() - 150, controls[2])
+    }
+
+    powerups = {
+        Powerup(100, 100, 'lightning')
     }
 
     -- load planet sprites
@@ -130,6 +135,10 @@ function love.draw()
     for _, object in ipairs(objects) do
         love.graphics.setColor(0.2, 0.8, 0.7)
         drawCircle(object.collision)
+    end
+
+    for _, powerup in ipairs(powerups) do
+        powerup:draw()
     end
 
     for _, player in ipairs(players) do

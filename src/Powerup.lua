@@ -3,10 +3,10 @@ local physics = require 'src.physics'
 
 function Powerup:init(x, y, type)
     self.x, self.y = x, y
+    self.type = type
     self.isAlive = true
     self.sprite = love.graphics.newImage('sprites/' .. type .. '.png')
-    self.radius = self.sprite:getWidth()
-    self.type = type
+    self.radius = self.sprite:getWidth() / 2
     self.collision = physics.makeCircle(self.x, self.y, self.radius, true)
 end
 
@@ -25,13 +25,15 @@ end
 function Powerup:draw()
     if not self.isAlive then return end
 
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite,
-        self.x, self.y,
+        self.collision:getX(), self.collision:getY(),
         self.collision:getAngle(),
         1, 1,
         self.radius, self.radius
     )
+    --love.graphics.circle('line', self.collision:getX(), self.collision:getY(), self.radius)
 end
 
 return Powerup
