@@ -10,7 +10,7 @@ function physics.beginContact(a, b, coll)
     local objectA, objectB = a:getUserData(), b:getUserData()
 
     if (objectA and objectA:instanceOf(Player)) or (objectB and objectB:instanceOf(Player)) then
-        if not (objectA and objectA:instanceOf(Powerup)) and not (objectB and objectB:instanceOf(Powerup)) then
+        if not (objectA and objectA:instanceOf(Powerup)) and not (objectB and objectB:instanceOf(Powerup)) then --delete this line after powerups ignore collisions
             crashSounds[love.math.random(6)]:play()
         end
     end

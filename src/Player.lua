@@ -41,6 +41,7 @@ end
 
 function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
+        lightningSounds[math.random(3)]:play()
         self.movementSpeed = 2 * settings.movementSpeed
         self.effectSprite = self.effectSprites.glow
         self.effectColor = {0.8, 1, 0, 1}
@@ -49,6 +50,7 @@ function Player:activatePowerup(powerup)
             self.effectSprite = nil
         end)
     elseif powerup.type == 'ghost' then
+        ghostSounds[math.random(3)]:play()
         self.isGhost = true
         self.color = {1, 1, 1, 0.5}
         Timer.after(settings.powerupTime, function()
@@ -56,6 +58,7 @@ function Player:activatePowerup(powerup)
             self.color = {1, 1, 1, 1}
         end)
     elseif powerup.type == 'shield' then
+        shieldSounds[math.random(3)]:play()
         self.isShielded = true
         self.effectSprite = self.effectSprites.shield
         self.effectColor = {0, 0.5, 0.8, 0.7}
