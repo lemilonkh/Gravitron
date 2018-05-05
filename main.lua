@@ -15,15 +15,12 @@ settings = {
 }
 
 function love.load()
-    musicTrack = love.audio.newSource("sound/Okatoka.mp3", "static")
-    local i = 1
+    local musicTrack = love.audio.newSource("sound/Okatoka.mp3", "static")
     crashSounds = {}
-    while(i <= 6) do
-        crashSound = love.audio.newSource("sound/crash" .. i .. ".mp3", "static")
+    for i = 1, 6 do
+        local crashSound = love.audio.newSource("sound/crash" .. i .. ".mp3", "static")
         table.insert(crashSounds, crashSound)
-        i = i + 1
     end
-    crashsound = love.audio.newSource("sound/crash1.mp3", "static")
     musicTrack:setLooping(true)
     musicTrack:play()
 
