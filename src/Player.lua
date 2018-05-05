@@ -22,6 +22,11 @@ function Player:init(spriteName, x, y, controls, playerNum)
     self.isShielded = false
 
     self.color = {1, 1, 1, 1}
+    self.effectSprite = nil
+    self.effectSprites = {
+        shield = love.graphics.newImage('sprites/energy_shield.png'),
+        glow = love.graphics.newImage('sprites/glow.png')
+    }
 end
 
 function Player:fire()
@@ -37,9 +42,12 @@ function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
         self.movementSpeed = 2 * settings.movementSpeed
         self.color = {1, 1, 0, 1}
+        self.effectSprite = self.effectSprites.glow
+        self.effectColor = {0.8, 1, 0, 1}
         Timer.after(settings.powerupTime, function()
             self.movementSpeed = settings.movementSpeed
             self.color = {1, 1, 1, 1}
+            self.effectSprite = nil
         end)
     elseif powerup.type == 'ghost' then
         self.isGhost = true
@@ -51,9 +59,11 @@ function Player:activatePowerup(powerup)
     elseif powerup.type == 'shield' then
         self.isShielded = true
         self.color = {0, 0, 1, 1}
+        self.effectSprite = self.effectSprites.shield
         Timer.after(settings.powerupTime, function()
             self.isShielded = false
             self.color = {1, 1, 1, 1}
+            self.effectSprite = nil
         end)
     end
 end
@@ -108,6 +118,18 @@ function Player:draw()
         love.graphics.setColor(0.8, 0.5, 0.2)
         local bulletRadius = bullet.collision:getFixtures()[1]:getShape():getRadius()
         love.graphics.circle('fill', bullet.collision:getX(), bullet.collision:getY(), bulletRadius)
+    end
+
+    -- draw powerup effects
+    if self.effectSprite then
+        love.graphics.setColor(self.effectColor or {1, 1, 1, 1})
+        love.graphics.draw(
+            self.effectSprite,
+            self.collision:getX(), self.collision:getY(),
+            self.collision:getAngle(),
+            1, 1,
+            self.effectSprite:getWidth() / 2, self.effectSprite:getHeight() / 2
+        )
     end
 
     -- draw player
