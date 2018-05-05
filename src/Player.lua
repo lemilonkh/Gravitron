@@ -79,7 +79,19 @@ function Player:activatePowerup(powerup)
     end
 end
 
+function Player:takeDamage()
+    util.removeValue(self.lifeballs, self.lifeballs[1])
+end
+
+function Player:Death()
+
+end
+
 function Player:update(dt)
+    if #self.lifeballs <= 0 do
+        Player:death()
+    end
+
     self.controls:update()
 
     local deltaAngle, deltaSpeed = self.controls:get('move')

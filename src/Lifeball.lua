@@ -10,7 +10,7 @@ function Lifeball:init(spriteName, x, y)
     self.collision:setUserData(self)
 end
 
-function Lifeball:onCollision(other, collision)
+function Lifeball:onCollision(other)
     local userData = other:getUserData()
     if userData and userData:instanceOf(Player) then
         userData:activatePowerup(self)
