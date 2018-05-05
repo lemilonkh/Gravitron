@@ -15,10 +15,10 @@ settings = {
 }
 
 function love.load()
-    local musicTrack = love.audio.newSource("sound/Okatoka.mp3", "static")
+    local musicTrack = love.audio.newSource('sounds/Okatoka.mp3', 'static')
     crashSounds = {}
     for i = 1, 6 do
-        local crashSound = love.audio.newSource("sound/crash" .. i .. ".mp3", "static")
+        local crashSound = love.audio.newSource('sounds/crash' .. i .. '.mp3', 'static')
         table.insert(crashSounds, crashSound)
     end
     musicTrack:setLooping(true)
@@ -92,15 +92,15 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-    if key == "escape" then
+    if key == 'escape' then
         love.event.quit()
-    elseif key == "f" then
+    elseif key == 'f' then
         love.window.setFullscreen(not love.window.getFullscreen())
-    elseif key == "r" then
+    elseif key == 'r' then
         love.load() -- reload game
-    elseif key == "p" then
+    elseif key == 'p' then
         isRunning = not isRunning
-    elseif key == "space" then
+    elseif key == 'space' then
         player:fire()
     end
 end
