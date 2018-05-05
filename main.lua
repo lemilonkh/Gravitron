@@ -15,6 +15,9 @@ settings = {
 }
 
 function love.load()
+    -- make sure math.random actually returns different values every time the game is started
+    math.randomseed(os.time())
+
     local musicTrack = love.audio.newSource('sounds/Okatoka.mp3', 'static')
     crashSounds = {}
     for i = 1, 6 do
@@ -23,6 +26,10 @@ function love.load()
     end
     musicTrack:setLooping(true)
     musicTrack:play()
+
+    local backgroundFiles = love.filesystem.getDirectoryItems('backgrounds')
+    local randomBackgroundFile = backgroundFiles[math.random(#backgroundFiles)]
+    backgroundImage = love.graphics.newImage('backgrounds/' .. randomBackgroundFile)
 
     isRunning = true
     love.physics.setMeter(settings.pixelsPerMeter)
@@ -118,6 +125,10 @@ function love.draw()
     love.graphics.scale(scale)
 
     love.graphics.setColor(1, 1, 1)
+
+    -- draw background image
+    local backgroundScale = (love.graphics.getWidth() / scale) / backgroundImage:getWidth()
+    love.graphics.draw(backgroundImage, 0, 0, 0, backgroundScale, backgroundScale)
 
     -- draw static planets
     for i, planet in ipairs(planets) do
