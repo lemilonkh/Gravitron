@@ -25,14 +25,14 @@ function love.load()
     -- make scaled up sprites pixel out nicely
     love.graphics.setDefaultFilter('nearest')
 
-    local musicTrack = love.audio.newSource('sounds/Okatoka.mp3', 'static')
+    local musicTrack = love.audio.newSource('sounds/LeMilonkh_Where_No_Man_Has_Gone_Before.ogg', 'stream')
     crashSounds = {}
     for i = 1, 6 do
         local crashSound = love.audio.newSource('sounds/crash' .. i .. '.mp3', 'static')
         table.insert(crashSounds, crashSound)
     end
     musicTrack:setLooping(true)
-    --musicTrack:play()
+    musicTrack:play()
 
     local backgroundFiles = love.filesystem.getDirectoryItems('backgrounds')
     local randomBackgroundFile = backgroundFiles[love.math.random(#backgroundFiles)]
