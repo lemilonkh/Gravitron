@@ -172,6 +172,8 @@ function Player:getPosition()
 end
 
 function Player:draw()
+    if not self.isAlive then return end
+
     -- draw bullets
     for _, bullet in ipairs(self.bullets) do
         love.graphics.setColor(0.8, 0.5, 0.2)
