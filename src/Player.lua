@@ -6,6 +6,7 @@ function Player:init(spriteName, x, y, controls, playerNum)
     self.controls = controls
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
+<<<<<<< HEAD
     if spriteName == 'delta_ship' then
         self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
         --print(spriteName, self.collision:getLinearDamping())
@@ -16,7 +17,15 @@ function Player:init(spriteName, x, y, controls, playerNum)
     self.collision:setMass(0.5)
     self.collision:setLinearDamping(0.5)
     --TODO: Default ship, if none of the spriteName matches
+=======
+    self.collision = physics.makeTriangle(self.x, self.y, self.width, self.height, true)
+    self.collision:setUserData(self)
+>>>>>>> 6f08fa8c302014f78a96e3fb79c7b7ee926e0dbd
     self.bullets = {}
+
+    self.movementSpeed = settings.movementSpeed
+    self.isGhost = false
+    self.isShielded = false
 end
 
 function Player:fire()
@@ -28,12 +37,22 @@ function Player:fire()
     bullet.collision:applyLinearImpulse(direction.x, direction.y)
 end
 
+function Player:activatePowerup(powerup)
+    if powerup.type == 'lightning' then
+        self.movementSpeed = 4 * self.movementSpeed
+    elseif powerup.type == 'ghost' then
+        self.isGhost = true
+    elseif powerup.type == 'shield' then
+        self.isShielded = true
+    end
+end
+
 function Player:update(dt)
     self.controls:update()
 
     local deltaAngle, deltaSpeed = self.controls:get('move')
     deltaAngle = deltaAngle * settings.turningSpeed * dt
-    deltaSpeed = deltaSpeed * settings.movementSpeed * dt
+    deltaSpeed = deltaSpeed * self.movementSpeed * dt
 
     local playerAngle = self.collision:getAngle() + deltaAngle
     self.collision:setAngle(playerAngle)

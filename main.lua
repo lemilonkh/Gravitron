@@ -1,6 +1,6 @@
 class = require 'libs.30log'
 vector = require 'libs.hump.vector'
-local Player = require 'src.Player'
+Player = require 'src.Player'
 local physics = require 'src.physics'
 local controls = require 'src.controls'
 
@@ -35,11 +35,11 @@ function love.load()
     backgroundImage = love.graphics.newImage('backgrounds/' .. randomBackgroundFile)
 
     isRunning = true
-    love.physics.setMeter(settings.pixelsPerMeter)
-    world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
-    world:setCallbacks(beginContact, endContact, preSolve, postSolve)
+
+    -- setup Love's physics engine
+    physics.init()
 
     players = {
         Player('delta_ship', 150, 150, controls[1]),
@@ -62,23 +62,6 @@ function love.load()
     for i = 1, settings.objectCount do
         addObject(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), 10)
     end
-end
-
-function beginContact(a, b, coll)
-    local i = love.math.random( 6 )
-    crashSounds[i]:play()
-end
- 
-function endContact(a, b, coll)
- 
-end
- 
-function preSolve(a, b, coll)
- 
-end
- 
-function postSolve(a, b, coll, normalimpulse, tangentimpulse)
- 
 end
 
 function addPlanet(x, y, r)
