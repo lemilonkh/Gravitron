@@ -92,12 +92,16 @@ function love.load()
         table.insert(planetSprites, planetSprite)
     end
 
-    for x = 1, settings.planetGridColumns do
-        for y = 1, settings.planetGridRows do
+    -- distribute planets randomly in a grid pattern
+    local planetGridColumnSize = love.graphics.getWidth() / settings.planetGridColumns
+    local planetGridRowSize = love.graphics.getHeight() / settings.planetGridRows
+
+    for x = 1, settings.planetGridColumns - 1 do
+        for y = 1, settings.planetGridRows - 1 do
             if love.math.random(0, 100) < settings.planetProbability then
                 local radius = love.math.random(50, 100)
-                local posX = x * love.graphics.getWidth() / settings.planetGridColumns
-                local posY = y * love.graphics.getHeight() / settings.planetGridRows
+                local posX = x * planetGridColumnSize + love.math.random(-planetGridColumnSize / 8, planetGridColumnSize / 8)
+                local posY = y * planetGridRowSize + love.math.random(-planetGridRowSize / 8, planetGridRowSize / 8)
                 addPlanet(posX, posY, radius)
             end
         end
