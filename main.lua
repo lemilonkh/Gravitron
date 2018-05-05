@@ -18,6 +18,9 @@ function love.load()
     -- make sure math.random actually returns different values every time the game is started
     math.randomseed(os.time())
 
+    -- make scaled up sprites pixel out nicely
+    love.graphics.setDefaultFilter('nearest')
+
     local musicTrack = love.audio.newSource('sounds/Okatoka.mp3', 'static')
     crashSounds = {}
     for i = 1, 6 do
@@ -52,7 +55,7 @@ function love.load()
     end
     
     for i = 1, settings.planetCount do
-        local radius = love.math.random(50, 200)
+        local radius = love.math.random(50, 100)
         addPlanet(love.math.random() * love.graphics.getWidth(), love.math.random() * love.graphics.getHeight(), radius)
     end
 
