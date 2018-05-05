@@ -7,6 +7,9 @@ local physics = require 'src.physics'
 local controls = require 'src.controls'
 
 settings = {
+    planetGridColumns = 6,
+    planetGridRows = 4,
+    planetProbability = 60, -- percent
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
     turningSpeed = math.pi, -- rad per second
@@ -88,11 +91,16 @@ function love.load()
         local planetSprite = love.graphics.newImage('sprites/' .. planetName .. '.png')
         table.insert(planetSprites, planetSprite)
     end
-    
-    for i = 1, settings.planetCount do
-        local radius = love.math.random(50, 100)
-        local x, y = getRandomPosition()
-        addPlanet(x, y, radius)
+
+    for x = 1, settings.planetGridColumns do
+        for y = 1, settings.planetGridRows do
+            if love.math.random(0, 100) < settings.planetProbability then
+                local radius = love.math.random(50, 100)
+                local posX = x * love.graphics.getWidth() / settings.planetGridColumns
+                local posY = y * love.graphics.getHeight() / settings.planetGridRows
+                addPlanet(posX, posY, radius)
+            end
+        end
     end
 
     for i = 1, settings.objectCount do
