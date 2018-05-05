@@ -1,4 +1,7 @@
+class = require 'libs.30log'
 local vector = require 'libs.hump.vector'
+local Player = require 'src.Player'
+local physics = require 'src.physics'
 
 settings = {
     pixelsPerMeter = 35,
@@ -15,11 +18,7 @@ function love.load()
     world = love.physics.newWorld(0, 0, true)
     planets = {} -- static colliders
     objects = {} -- dynamic objects
-    player = {}
-
-    player.sprite = love.graphics.newImage('sprites/delta_ship.png')
-    local playerWidth, playerHeight = player.sprite:getPixelDimensions()
-    player.collision = makeTriangle(150, 150, playerWidth, playerHeight, true)
+    player = Player(150, 150)
 
     -- load planet sprites
     local planetNames = {'earth', 'mars', 'neptun', 'venus', 'sun'}
@@ -27,17 +26,6 @@ function love.load()
     for _, planetName in ipairs(planetNames) do
         local planetSprite = love.graphics.newImage('sprites/' .. planetName .. '.png')
         table.insert(planetSprites, planetSprite)
-    end
-
-    -- bullet attack
-    player.bullets = {}
-    player.fire = function(self)
-        local bullet = {}
-        bullet.x, bullet.y = player.collision:getWorldCenter()
-        bullet.collision = makeCircle(bullet.x, bullet.y, 10, true)
-        table.insert(player.bullets, bullet)
-        local direction = vector(player.collision:getLinearVelocity()):normalized() * 100
-        bullet.collision:applyLinearImpulse(direction.x, direction.y)
     end
     
     for i = 1, settings.planetCount do
@@ -50,54 +38,18 @@ function love.load()
 end
 
 function addPlanet(x, y, r)
-	local planet = {}
-	planet.collision = makeCircle(x, y, r, false)
-        planet.x=x --TODO
-        planet.y=y
-	planet.r=r
-        table.insert(planets, planet)
+    local planet = {
+        x = x,
+        y = y,
+        r = r,
+        collision = physics.makeCircle(x, y, r, false)
+    }
+    table.insert(planets, planet)
 end
 
 function addObject(x, y, r)
-    local object = {}
-    object.collision = makeCircle(x, y, r, true)
+    local object = {collision = physics.makeCircle(x, y, r, true)}
     table.insert(objects, object)
-end
-
-function makeCircle(x, y, r, isDynamic)
-    local bodyType = isDynamic and 'dynamic' or 'static'
-    local body = love.physics.newBody(world, x, y, bodyType)
-	local shape = love.physics.newCircleShape(r)
-	local fixture = love.physics.newFixture(body, shape, 1)
-    fixture:setDensity(5)
-    fixture:setFriction(1)
-    fixture:setRestitution(0)
-    
-    return body
-end
-
-function makeBox(x, y, w, h, isDynamic)
-    local bodyType = isDynamic and 'dynamic' or 'static'
-    local body = love.physics.newBody(world, x, y, bodyType)
-	local shape = love.physics.newRectangleShape(w, h)
-	local fixture = love.physics.newFixture(body, shape, 1)
-	fixture:setDensity(20)
-	fixture:setFriction(1)
-	fixture:setRestitution(0)
-	
-	return body
-end
-
-function makeTriangle(x, y, w, h, isDynamic)
-    local bodyType = isDynamic and 'dynamic' or 'static'
-    local body = love.physics.newBody(world, x, y, bodyType)
-    local shape = love.physics.newPolygonShape(-w/2, 0, w/2, -h/2, w/2, h/2)
-    local fixture = love.physics.newFixture(body, shape, 1)
-    fixture:setDensity(20)
-    fixture:setFriction(1)
-    fixture:setRestitution(0)
-
-    return body
 end
 
 function love.update(dt)
