@@ -41,12 +41,10 @@ end
 function Player:activatePowerup(powerup)
     if powerup.type == 'lightning' then
         self.movementSpeed = 2 * settings.movementSpeed
-        self.color = {1, 1, 0, 1}
         self.effectSprite = self.effectSprites.glow
         self.effectColor = {0.8, 1, 0, 1}
         Timer.after(settings.powerupTime, function()
             self.movementSpeed = settings.movementSpeed
-            self.color = {1, 1, 1, 1}
             self.effectSprite = nil
         end)
     elseif powerup.type == 'ghost' then
@@ -58,11 +56,10 @@ function Player:activatePowerup(powerup)
         end)
     elseif powerup.type == 'shield' then
         self.isShielded = true
-        self.color = {0, 0, 1, 1}
         self.effectSprite = self.effectSprites.shield
+        self.effectColor = {0, 0.5, 0.8, 0.7}
         Timer.after(settings.powerupTime, function()
             self.isShielded = false
-            self.color = {1, 1, 1, 1}
             self.effectSprite = nil
         end)
     end
