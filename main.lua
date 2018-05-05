@@ -5,7 +5,6 @@ settings = {
     movementSpeed = 15,
     planetCount = 5,
     objectCount = 20,
-    playerSize = 15,
     maxGravityDistance = 3 -- factor for radius of maximum gravity excertion
 }
 
@@ -18,8 +17,8 @@ function love.load()
     player = {}
 
     player.sprite = love.graphics.newImage('sprites/delta_ship.png')
-    local playerWidth, playerHeight = player.sprite:getDimensions()
-    player.collision = makeBox(playerWidth, playerHeight, settings.playerSize, settings.playerSize, true)
+    local playerWidth, playerHeight = player.sprite:getPixelDimensions()
+    player.collision = makeTriangle(150, 150, playerWidth, playerHeight, true)
 
     -- bullet attack
     player.bullets = {}
@@ -75,6 +74,18 @@ function makeBox(x, y, w, h, isDynamic)
 	fixture:setRestitution(0)
 	
 	return body
+end
+
+function makeTriangle(x, y, w, h, isDynamic)
+    local bodyType = isDynamic and 'dynamic' or 'static'
+    local body = love.physics.newBody(world, x, y, bodyType)
+    local shape = love.physics.newPolygonShape(-w/2, 0, w/2, -h/2, w/2, h/2)
+    local fixture = love.physics.newFixture(body, shape, 1)
+    fixture:setDensity(20)
+    fixture:setFriction(1)
+    fixture:setRestitution(0)
+
+    return body
 end
 
 function love.update(dt)
