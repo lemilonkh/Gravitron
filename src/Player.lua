@@ -6,6 +6,7 @@ local util = require 'src.util'
 function Player:init(spriteName, x, y, controls)
     self.x, self.y = x, y
     self.controls = controls
+    self.isAlive = true
     self.sprite = love.graphics.newImage('sprites/' .. spriteName .. '.png')
     self.width, self.height = self.sprite:getDimensions()
 
@@ -121,6 +122,7 @@ end
 
 function Player:death()
     print('Player died!')
+    self.isAlive = false
 end
 
 function Player:update(dt)
@@ -170,6 +172,8 @@ function Player:getPosition()
 end
 
 function Player:draw()
+    if not self.isAlive then return end
+
     -- draw bullets
     for _, bullet in ipairs(self.bullets) do
         love.graphics.setColor(0.8, 0.5, 0.2)

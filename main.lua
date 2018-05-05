@@ -7,6 +7,9 @@ local physics = require 'src.physics'
 local controls = require 'src.controls'
 
 settings = {
+    planetGridColumns = 6,
+    planetGridRows = 4,
+    planetProbability = 60, -- percent
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
     turningSpeed = math.pi, -- rad per second
@@ -22,7 +25,8 @@ settings = {
 }
 
 function love.load()
-    -- make sure math.random actually returns different values every time the game is started
+    isOver = false
+        -- make sure math.random actually returns different values every time the game is started
     math.randomseed(os.time())
 
     -- make scaled up sprites pixel out nicely
@@ -91,10 +95,19 @@ function love.load()
 
     asteroidSprite = love.graphics.newImage('sprites/asteroid.png')
 
-    for i = 1, settings.planetCount do
-        local radius = love.math.random(50, 100)
-        local x, y = getRandomPosition()
-        addPlanet(x, y, radius)
+    -- distribute planets randomly in a grid pattern
+    local planetGridColumnSize = love.graphics.getWidth() / settings.planetGridColumns
+    local planetGridRowSize = love.graphics.getHeight() / settings.planetGridRows
+
+    for x = 1, settings.planetGridColumns - 1 do
+        for y = 1, settings.planetGridRows - 1 do
+            if love.math.random(0, 100) < settings.planetProbability then
+                local radius = love.math.random(50, 100)
+                local posX = x * planetGridColumnSize + love.math.random(-planetGridColumnSize / 8, planetGridColumnSize / 8)
+                local posY = y * planetGridRowSize + love.math.random(-planetGridRowSize / 8, planetGridRowSize / 8)
+                addPlanet(posX, posY, radius)
+            end
+        end
     end
 
     for i = 1, settings.objectCount do
@@ -154,6 +167,10 @@ function drawCircle(body)
 end
 
 function love.draw()
+    if isOver then
+        Player:death()
+    end
+
     love.graphics.push()
     local scale = love.graphics.getDPIScale()
     love.graphics.scale(scale)
@@ -187,6 +204,13 @@ function love.draw()
 
     for _, player in ipairs(players) do
         player:draw()
+
+        if not player.isAlive then
+            love.graphics.setColor(1, 1, 1)
+            local font = love.graphics.newFont(400)
+            love.graphics.setFont(font)
+            love.graphics.printf("GAME OVER", 0, 0, love.graphics.getWidth(), 'center')
+        end
     end
 
     love.graphics.pop()
