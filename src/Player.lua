@@ -43,10 +43,17 @@ end
 function Player:fire()
     local bullet = {}
     bullet.x, bullet.y = self.collision:getWorldCenter()
+    local angle = self.collision:getAngle()
+    local diry = math.sin(angle)*70
+    local dirx = math.cos(angle)*70
+    bullet.x = bullet.x + dirx
+    bullet.y = bullet.y + diry
     bullet.collision = physics.makeCircle(bullet.x, bullet.y, 10, true)
+    bullet.collision:setMass(30)
     table.insert(self.bullets, bullet)
-    local direction = vector(self.collision:getLinearVelocity()):normalized() * 100
-    bullet.collision:applyLinearImpulse(direction.x, direction.y)
+    --bullet.collision:applyLinearImpulse(dirx, diry)
+    self.collision:applyLinearImpulse(-dirx*0.5, -diry*0.5)
+    bullet.collision:setLinearVelocity(dirx*4, diry*4)
     shotSounds[math.random(8)]:play()
 end
 
