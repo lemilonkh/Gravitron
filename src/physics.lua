@@ -74,10 +74,15 @@ function physics.makeTriangle(x, y, w, h, isDynamic, userData)
     fixture:setFriction(1)
     fixture:setRestitution(0)
 
+    if userData then
+        body:setUserData(userData)
+        fixture:setUserData(userData)
+    end
+
     return body
 end
 
-function physics.makeDiamond(x, y, w, h, isDynamic)
+function physics.makeDiamond(x, y, w, h, isDynamic, userData)
     local bodyType = isDynamic and 'dynamic' or 'static'
     local body = love.physics.newBody(world, x, y, bodyType)
     local shape = love.physics.newPolygonShape(0, h/2, -w/2, 0, 0, -h/2, w/2, 0)
