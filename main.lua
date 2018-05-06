@@ -7,8 +7,8 @@ local physics = require 'src.physics'
 local controls = require 'src.controls'
 
 settings = {
-    planetGridColumns = 6,
-    planetGridRows = 4,
+    planetGridColumns = 5,
+    planetGridRows = 3,
     planetProbability = 60, -- percent
     pixelsPerMeter = 35,
     movementSpeed = 100, -- acceleration in px per second
@@ -101,8 +101,8 @@ function love.load()
         for y = 1, settings.planetGridRows - 1 do
             if love.math.random(0, 100) < settings.planetProbability then
                 local radius = love.math.random(50, 100)
-                local posX = x * planetGridColumnSize + love.math.random(-planetGridColumnSize / 8, planetGridColumnSize / 8)
-                local posY = y * planetGridRowSize + love.math.random(-planetGridRowSize / 8, planetGridRowSize / 8)
+                local posX = x * planetGridColumnSize + love.math.random(-planetGridColumnSize / 4, planetGridColumnSize / 4)
+                local posY = y * planetGridRowSize + love.math.random(-planetGridRowSize / 4, planetGridRowSize / 4)
                 addPlanet(posX, posY, radius)
             end
         end
