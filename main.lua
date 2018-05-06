@@ -93,6 +93,8 @@ function love.load()
         table.insert(planetSprites, planetSprite)
     end
 
+    asteroidSprite = love.graphics.newImage('sprites/asteroid.png')
+
     -- distribute planets randomly in a grid pattern
     local planetGridColumnSize = love.graphics.getWidth() / settings.planetGridColumns
     local planetGridRowSize = love.graphics.getHeight() / settings.planetGridRows
@@ -131,6 +133,7 @@ end
 
 function addObject(x, y, r)
     local object = {collision = physics.makeCircle(x, y, r, true)}
+    object.x, object.y, object.r = x, y, r
     table.insert(objects, object)
 end
 
@@ -189,8 +192,10 @@ function love.draw()
 
     -- draw dynamic objects
     for _, object in ipairs(objects) do
-        love.graphics.setColor(0.2, 0.8, 0.7)
-        drawCircle(object.collision)
+        love.graphics.setColor(1, 1, 1)
+        --drawCircle(object.collision)
+        love.graphics.draw(asteroidSprite, object.collision:getX(), object.collision:getY(), object.collision:getAngle(), object.r/52*2, object.r/52*2, object.r*2, object.r*2)
+
     end
 
     for _, powerup in ipairs(powerups) do
